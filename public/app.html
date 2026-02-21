@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>501 LOCKS — NCAAM Basketball</title>
+<link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --surface2: #161625;
+  --surface3: #1d1d30;
+  --accent: #39ff14;
+  --accent-dim: rgba(57,255,20,0.12);
+  --red: #ff2d55;
+  --red-dim: rgba(255,45,85,0.12);
+  --gold: #ffd60a;
+  --gold-dim: rgba(255,214,10,0.12);
+  --blue: #0af5ff;
+  --blue-dim: rgba(10,245,255,0.1);
+  --purple: #bf5fff;
+  --purple-dim: rgba(191,95,255,0.12);
+  --text: #e8e8f5;
+  --muted: #5a5a7a;
+  --border: rgba(255,255,255,0.07);
+  --panel-w: 500px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  display: flex;
+  flex-direction: column;
+}
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  pointer-events:none;
+  z-index:9998;
+}
+
+/* ── HEADER ── */
+.hdr {
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  padding:12px 24px;
+  border-bottom:1px solid var(--border);
+  background: linear-gradient(180deg, rgba(57,255,20,0.03) 0%, transparent 100%);
+  position:relative;
+}
+.hdr::after {
+  content:'';
+  position:absolute; left:0; bottom:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+.logo {
+  font-family:'Teko',sans-serif;
+  font-size:38px; font-weight:700; letter-spacing:3px; line-height:1;
+  color:var(--accent);
+  text-shadow:0 0 25px rgba(57,255,20,0.35);
+}
+.logo em { color:var(--red); font-style:normal; }
+.hdr-mid { flex:1; }
+.hdr-title { font-size:9px; color:var(--gold); letter-spacing:3px; text-transform:uppercase; }
+.hdr-sub { font-size:8px; color:var(--muted); letter-spacing:1.5px; margin-top:2px; }
+.pulse { width:6px; height:6px; border-radius:50%; background:var(--red); box-shadow:0 0 8px var(--red); display:inline-block; margin-right:5px; animation:blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hdr-stats { display:flex; gap:18px; }
+.hs { display:flex; flex-direction:column; align-items:center; }
+.hs-val { font-family:'Teko',sans-serif; font-size:24px; font-weight:600; color:var(--accent); line-height:1; }
+.hs-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-top:1px; }
+
+/* ── TABS ── */
+.tab-bar {
+  flex-shrink:0;
+  display:flex;
+  align-items:stretch;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  position:relative;
+}
+.tab {
+  display:flex; align-items:center; gap:8px;
+  padding:0 24px;
+  height:44px;
+  cursor:pointer;
+  border:none;
+  background:transparent;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:9px; letter-spacing:2.5px; text-transform:uppercase;
+  color:var(--muted);
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+  position:relative;
+}
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.tab.active-week { color:var(--blue); border-bottom-color:var(--blue); }
+.tab.active-final { color:var(--gold); border-bottom-color:var(--gold); }
+.tab-ct {
+  font-family:'Teko',sans-serif;
+  font-size:16px; font-weight:600; line-height:1;
+}
+.tab:nth-child(1) .tab-ct { color:var(--accent); }
+.tab:nth-child(2) .tab-ct { color:var(--blue); }
+.tab:nth-child(3) .tab-ct { color:var(--gold); }
+.tab-sep { width:1px; background:var(--border); margin:8px 0; }
+
+.tab-hint {
+  margin-left:auto;
+  padding:0 16px;
+  font-size:8px; color:var(--muted); letter-spacing:1px;
+  display:flex; align-items:center;
+}
+.tab-hint span { color:var(--blue); }
+
+/* ── BODY ── */
+.body-wrap {
+  flex:1;
+  display:flex;
+  overflow:hidden;
+  min-height:0;
+}
+
+/* ── GAME LIST ── */
+.game-list {
+  flex:1;
+  overflow-y:auto;
+  padding:12px 20px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--surface3) transparent;
+}
+.game-list::-webkit-scrollbar { width:3px; }
+.game-list::-webkit-scrollbar-thumb { background:var(--surface3); }
+
+.day-hdr {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 0 8px;
+}
+.day-hdr:first-child { padding-top:4px; }
+.day-title {
+  font-family:'Teko',sans-serif;
+  font-size:15px; letter-spacing:4px; color:var(--muted);
+  white-space:nowrap;
+}
+.day-line { flex:1; height:1px; background:var(--border); }
+.day-ct { font-size:8px; color:var(--muted); letter-spacing:2px; white-space:nowrap; }
+
+/* ── GAME CARD ── */
+.gc {
+  display:grid;
+  grid-template-columns:54px 1fr 108px 100px 96px;
+  align-items:center;
+  border:1px solid var(--border);
+  background:var(--surface);
+  margin-bottom:4px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:all .12s;
+}
+.gc::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:var(--border);
+  transition:background .15s;
+}
+.gc:hover { border-color:rgba(57,255,20,0.2); transform:translateX(2px); }
+.gc.active-card { border-color:rgba(10,245,255,0.3); background:rgba(10,245,255,0.02); }
+.gc.active-card::before { background:var(--blue); }
+.gc.hot::before { background:var(--accent); }
+.gc.value::before { background:var(--gold); }
+.gc.risky::before { background:var(--red); }
+
+.gc-time {
+  padding:10px 8px 10px 13px;
+  font-size:9px; color:var(--muted); letter-spacing:.5px; line-height:1.6;
+}
+.gc-time strong { display:block; font-size:11px; color:var(--text); font-weight:500; }
+
+.gc-teams { padding:9px 10px; min-width:0; }
+.gc-team {
+  display:flex; align-items:center; gap:6px;
+  padding:2px 0; line-height:1;
+}
+.gc-abv {
+  font-family:'Teko',sans-serif;
+  font-size:19px; font-weight:600; letter-spacing:1px;
+  min-width:50px;
+}
+.gc-fullname { font-size:8px; color:var(--muted); letter-spacing:.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
+.gc-score { font-family:'Teko',sans-serif; font-size:20px; color:var(--gold); margin-left:auto; padding-left:4px; }
+.winner .gc-abv { color:var(--accent); }
+.loser .gc-abv { color:var(--muted); }
+
+.gc-spread { padding:9px 8px; border-left:1px solid var(--border); text-align:center; }
+.gc-spread-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:2px; }
+.gc-spread-val { font-family:'Teko',sans-serif; font-size:26px; font-weight:600; letter-spacing:1px; line-height:1; }
+.gc-spread-val.fav { color:var(--red); }
+.gc-spread-val.pick { color:var(--blue); }
+.gc-spread-team { font-size:7px; color:var(--muted); letter-spacing:1px; margin-top:1px; }
+
+.gc-conf { padding:9px 8px; border-left:1px solid var(--border); }
+.gc-conf-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:3px; }
+.gc-conf-val { font-family:'Teko',sans-serif; font-size:24px; font-weight:600; line-height:1; }
+.gc-conf-val.hi { color:var(--accent); }
+.gc-conf-val.md { color:var(--gold); }
+.gc-conf-val.lo { color:var(--red); }
+.gc-bar-wrap { height:3px; background:rgba(255,255,255,0.05); margin-top:3px; }
+.gc-bar { height:100%; transition:width .5s ease; }
+
+.gc-signal { padding:9px 8px; border-left:1px solid var(--border); display:flex; flex-direction:column; gap:4px; align-items:flex-start; justify-content:center; }
+.tag {
+  font-size:7px; letter-spacing:2px; text-transform:uppercase;
+  padding:2px 5px; border:1px solid; white-space:nowrap;
+}
+.tag.cover { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
+.tag.fade  { border-color:var(--red);   color:var(--red);   background:var(--red-dim);   }
+.tag.push  { border-color:var(--gold);  color:var(--gold);  background:var(--gold-dim);  }
+.tag.toss  { border-color:var(--muted); color:var(--muted); }
+.tag.await { border-color:var(--blue);  color:var(--blue);  background:var(--blue-dim);  }
+.result-tag { font-size:8px; font-weight:500; }
+.result-tag.covered { color:var(--accent); }
+.result-tag.missed  { color:var(--red); }
+.result-tag.pushed  { color:var(--gold); }
+
+.gc-badge {
+  position:absolute; top:5px; right:7px;
+  font-size:7px; letter-spacing:2px; text-transform:uppercase;
+}
+.gc-badge.final    { color:var(--muted); }
+.gc-badge.upcoming { color:var(--gold); }
+.gc-badge.hot-pick { color:var(--red); animation:blink 1.4s infinite; }
+
+/* ── ANALYSIS PANEL ── */
+.ap {
+  width:var(--panel-w);
+  flex-shrink:0;
+  border-left:1px solid var(--border);
+  display:flex;
+  flex-direction:column;
+  background:var(--surface);
+  transition:width .3s ease;
+  overflow:hidden;
+}
+.ap.collapsed { width:0; border-left:none; }
+
+.ap-hdr {
+  flex-shrink:0;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+  background: linear-gradient(90deg, rgba(10,245,255,0.04), transparent);
+}
+.ap-title { font-family:'Teko',sans-serif; font-size:18px; letter-spacing:4px; color:var(--blue); flex:1; }
+.ap-close {
+  background:transparent; border:1px solid var(--border);
+  color:var(--muted); font-family:'IBM Plex Mono',monospace;
+  font-size:10px; padding:3px 9px; cursor:pointer; transition:all .15s;
+}
+.ap-close:hover { border-color:var(--red); color:var(--red); }
+
+.ap-matchup {
+  flex-shrink:0;
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center;
+}
+.apt { flex:1; display:flex; flex-direction:column; gap:3px; }
+.apt.away { align-items:flex-end; }
+.apt-abv { font-family:'Teko',sans-serif; font-size:40px; font-weight:700; letter-spacing:2px; line-height:1; }
+.apt.home .apt-abv { color:var(--accent); }
+.apt.away .apt-abv { color:var(--red); }
+.apt-name { font-size:8px; color:var(--muted); letter-spacing:1.5px; }
+.apt-rec  { font-size:10px; color:var(--text); letter-spacing:1px; }
+.ap-vs { font-family:'Teko',sans-serif; font-size:20px; color:var(--muted); letter-spacing:2px; padding:0 10px; }
+
+.ap-metrics {
+  flex-shrink:0;
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  border-bottom:1px solid var(--border);
+}
+.apm { padding:9px 12px; border-right:1px solid var(--border); }
+.apm:last-child { border-right:none; }
+.apm-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:3px; }
+.apm-val { font-family:'Teko',sans-serif; font-size:22px; font-weight:600; line-height:1; }
+.apm-sub { font-size:7px; color:var(--muted); margin-top:2px; }
+
+/* ── AI BODY ── */
+.ap-body {
+  flex:1; overflow-y:auto;
+  padding:16px 18px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--surface3) transparent;
+}
+.ap-body::-webkit-scrollbar { width:3px; }
+.ap-body::-webkit-scrollbar-thumb { background:var(--surface3); }
+
+.ai-loading {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  height:100%; gap:14px; color:var(--muted);
+}
+.ai-spinner {
+  width:32px; height:32px;
+  border:2px solid var(--border);
+  border-top-color:var(--blue);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.ai-loading-text { font-size:9px; letter-spacing:3px; color:var(--blue); }
+
+.click-hint {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  height:100%; gap:10px; padding:28px;
+}
+.click-hint-icon { font-size:44px; opacity:.12; }
+.click-hint-text { font-size:10px; color:var(--muted); letter-spacing:2px; text-align:center; line-height:1.9; }
+.click-hint-arrow { font-size:8px; color:var(--blue); letter-spacing:3px; animation:float 2s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+.ai-content { display:flex; flex-direction:column; }
+.ai-sec { border-bottom:1px solid var(--border); padding:12px 0; }
+.ai-sec:last-child { border-bottom:none; }
+.ai-sec-hdr { display:flex; align-items:center; gap:7px; margin-bottom:8px; }
+.ai-sec-icon { font-size:13px; }
+.ai-sec-title { font-family:'Teko',sans-serif; font-size:15px; letter-spacing:3px; color:var(--gold); }
+.ai-sec-body { font-size:10px; color:var(--text); line-height:1.8; letter-spacing:.3px; }
+.ai-sec-body strong { color:var(--blue); font-weight:500; }
+
+.ai-verdict {
+  background: linear-gradient(135deg, rgba(10,245,255,0.05), rgba(57,255,20,0.03));
+  border:1px solid rgba(10,245,255,0.18);
+  padding:12px;
+  margin-top:4px;
+}
+.ai-verdict-lbl { font-size:7px; color:var(--blue); letter-spacing:3px; margin-bottom:5px; }
+.ai-verdict-main { font-family:'Teko',sans-serif; font-size:20px; letter-spacing:2px; color:var(--text); line-height:1.3; }
+.ai-verdict-sub { font-size:9px; color:var(--muted); margin-top:5px; line-height:1.7; }
+
+.mini-bar-wrap { display:flex; align-items:center; gap:7px; margin:2px 0 5px; }
+.mini-bar-lbl { font-size:8px; color:var(--muted); min-width:32px; letter-spacing:.5px; }
+.mini-bar-track { flex:1; height:4px; background:rgba(255,255,255,0.05); }
+.mini-bar-fill { height:100%; }
+.mini-bar-num { font-size:8px; color:var(--text); min-width:30px; text-align:right; }
+.stat-row { display:flex; align-items:center; justify-content:space-between; padding:3px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+.stat-row:last-child { border-bottom:none; }
+.stat-lbl { font-size:8px; color:var(--muted); letter-spacing:.5px; }
+.stat-val { font-size:8px; color:var(--text); letter-spacing:.5px; text-align:right; }
+.stat-val.pos { color:var(--accent); }
+.stat-val.neg { color:var(--red); }
+
+/* ── FOOTER ── */
+.footer {
+  flex-shrink:0;
+  padding:5px 24px;
+  font-size:7px; color:var(--muted); letter-spacing:1px;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+}
+.footer span { color:var(--gold); }
+
+.fade-in { animation:fi .25s ease forwards; opacity:0; }
+@keyframes fi { to { opacity:1; } }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:60px 20px; gap:12px; color:var(--muted);
+}
+.empty-state-icon { font-size:48px; opacity:.1; }
+.empty-state-text { font-size:10px; color:var(--muted); letter-spacing:2px; text-align:center; line-height:1.8; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">501<em>LOCKS</em></div>
+  <div class="hdr-mid">
+    <div class="hdr-title"><span class="pulse"></span>NCAA MEN'S BASKETBALL — ALL TIMES CENTRAL</div>
+    <div class="hdr-sub">CLICK ANY GAME FOR AI DEEP ANALYSIS · REAL STANDINGS DATA · FEB 20–28, 2026</div>
+  </div>
+  <div class="hdr-stats">
+    <div class="hs"><div class="hs-val" id="stat-today">—</div><div class="hs-lbl">TODAY</div></div>
+    <div class="hs"><div class="hs-val" id="stat-week">—</div><div class="hs-lbl">THIS WEEK</div></div>
+    <div class="hs"><div class="hs-val" id="stat-final">—</div><div class="hs-lbl">FINAL</div></div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tab-bar">
+  <button class="tab active" id="tab-today" onclick="setTab('today')">
+    <span>UPCOMING TODAY</span>
+    <span class="tab-ct" id="tc-today">—</span>
+  </button>
+  <div class="tab-sep"></div>
+  <button class="tab" id="tab-week" onclick="setTab('week')">
+    <span>THIS WEEK</span>
+    <span class="tab-ct" id="tc-week">—</span>
+  </button>
+  <div class="tab-sep"></div>
+  <button class="tab" id="tab-final" onclick="setTab('final')">
+    <span>TODAY'S RESULTS</span>
+    <span class="tab-ct" id="tc-final">—</span>
+  </button>
+  <div class="tab-hint"><span>↑</span>&nbsp;CLICK ANY GAME FOR AI ANALYSIS</div>
+</div>
+
+<!-- BODY -->
+<div class="body-wrap">
+  <div class="game-list" id="gameList"></div>
+
+  <div class="ap collapsed" id="ap">
+    <div class="ap-hdr">
+      <div class="ap-title">DEEP ANALYSIS</div>
+      <button class="ap-close" onclick="closePanel()">✕ CLOSE</button>
+    </div>
+    <div class="ap-matchup" id="apMatchup"></div>
+    <div class="ap-metrics" id="apMetrics"></div>
+    <div class="ap-body" id="apBody">
+      <div class="click-hint">
+        <div class="click-hint-icon">🏀</div>
+        <div class="click-hint-text">SELECT A GAME<br>FOR AI ANALYSIS</div>
+        <div class="click-hint-arrow">← CLICK ANY GAME</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span>⚠ ENTERTAINMENT ONLY</span> · Algorithmic spread predictions. Not official Vegas lines. AI analysis uses real 2025-26 standings data. Please gamble responsibly.
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  STANDINGS
+// ═══════════════════════════════════════════════════════
+const STD = {
+  "MICH":{"w":25,"l":1,"conf":"Big Ten","cr":"15-1","r":1},
+  "NEB":{"w":22,"l":4,"conf":"Big Ten","cr":"11-4","r":2},
+  "ILL":{"w":22,"l":5,"conf":"Big Ten","cr":"13-3","r":3},
+  "MSU":{"w":21,"l":5,"conf":"Big Ten","cr":"11-4","r":4},
+  "PUR":{"w":21,"l":5,"conf":"Big Ten","cr":"11-4","r":5},
+  "IOWA":{"w":19,"l":7,"conf":"Big Ten","cr":"9-6","r":6},
+  "WIS":{"w":18,"l":8,"conf":"Big Ten","cr":"10-5","r":7},
+  "USC":{"w":18,"l":8,"conf":"Big Ten","cr":"7-8","r":8},
+  "OSU":{"w":17,"l":9,"conf":"Big Ten","cr":"9-6","r":9},
+  "UCLA":{"w":17,"l":9,"conf":"Big Ten","cr":"9-6","r":10},
+  "IND":{"w":17,"l":9,"conf":"Big Ten","cr":"8-7","r":11},
+  "WASH":{"w":13,"l":13,"conf":"Big Ten","cr":"5-10","r":12},
+  "MINN":{"w":12,"l":14,"conf":"Big Ten","cr":"5-10","r":13},
+  "RUTG":{"w":11,"l":15,"conf":"Big Ten","cr":"4-11","r":14},
+  "NW":{"w":11,"l":16,"conf":"Big Ten","cr":"3-13","r":15},
+  "PSU":{"w":11,"l":16,"conf":"Big Ten","cr":"2-14","r":16},
+  "MD":{"w":10,"l":16,"conf":"Big Ten","cr":"3-12","r":17},
+  "ORE":{"w":9,"l":17,"conf":"Big Ten","cr":"2-13","r":18},
+  "DUKE":{"w":24,"l":2,"conf":"ACC","cr":"13-1","r":1},
+  "UVA":{"w":23,"l":3,"conf":"ACC","cr":"11-2","r":2},
+  "MIA":{"w":21,"l":5,"conf":"ACC","cr":"10-3","r":3},
+  "UNC":{"w":20,"l":6,"conf":"ACC","cr":"8-5","r":4},
+  "CLEM":{"w":20,"l":7,"conf":"ACC","cr":"10-4","r":5},
+  "LOU":{"w":19,"l":7,"conf":"ACC","cr":"8-5","r":6},
+  "NCST":{"w":19,"l":8,"conf":"ACC","cr":"10-4","r":7},
+  "SMU":{"w":18,"l":8,"conf":"ACC","cr":"7-6","r":8},
+  "CAL":{"w":18,"l":8,"conf":"ACC","cr":"6-7","r":9},
+  "VT":{"w":17,"l":10,"conf":"ACC","cr":"6-8","r":10},
+  "STAN":{"w":16,"l":10,"conf":"ACC","cr":"5-8","r":11},
+  "SYR":{"w":15,"l":12,"conf":"ACC","cr":"6-8","r":12},
+  "WAKE":{"w":14,"l":12,"conf":"ACC","cr":"5-8","r":13},
+  "FSU":{"w":13,"l":13,"conf":"ACC","cr":"6-7","r":14},
+  "ND":{"w":12,"l":14,"conf":"ACC","cr":"3-10","r":15},
+  "GT":{"w":11,"l":16,"conf":"ACC","cr":"2-12","r":16},
+  "PITT":{"w":9,"l":17,"conf":"ACC","cr":"2-11","r":17},
+  "BC":{"w":9,"l":17,"conf":"ACC","cr":"2-11","r":18},
+  "ARIZ":{"w":24,"l":2,"conf":"Big 12","cr":"11-2","r":1},
+  "HOU":{"w":23,"l":3,"conf":"Big 12","cr":"11-2","r":2},
+  "ISU":{"w":23,"l":3,"conf":"Big 12","cr":"10-3","r":3},
+  "KU":{"w":20,"l":6,"conf":"Big 12","cr":"10-3","r":4},
+  "TTU":{"w":19,"l":7,"conf":"Big 12","cr":"9-4","r":5},
+  "BYU":{"w":19,"l":7,"conf":"Big 12","cr":"7-6","r":6},
+  "UCF":{"w":18,"l":7,"conf":"Big 12","cr":"7-6","r":7},
+  "WVU":{"w":16,"l":10,"conf":"Big 12","cr":"7-6","r":8},
+  "TCU":{"w":16,"l":10,"conf":"Big 12","cr":"6-7","r":9},
+  "OKST":{"w":16,"l":10,"conf":"Big 12","cr":"4-9","r":10},
+  "CIN":{"w":14,"l":12,"conf":"Big 12","cr":"6-7","r":11},
+  "ASU":{"w":14,"l":12,"conf":"Big 12","cr":"5-8","r":12},
+  "COLO":{"w":14,"l":12,"conf":"Big 12","cr":"4-9","r":13},
+  "BAY":{"w":13,"l":13,"conf":"Big 12","cr":"3-10","r":14},
+  "KSU":{"w":11,"l":15,"conf":"Big 12","cr":"2-11","r":15},
+  "UTAH":{"w":10,"l":16,"conf":"Big 12","cr":"2-11","r":16},
+  "VAN":{"w":21,"l":5,"conf":"SEC","cr":"8-5","r":1},
+  "FLA":{"w":20,"l":6,"conf":"SEC","cr":"11-2","r":2},
+  "TENN":{"w":19,"l":7,"conf":"SEC","cr":"9-4","r":3},
+  "ARK":{"w":19,"l":7,"conf":"SEC","cr":"9-4","r":4},
+  "ALA":{"w":19,"l":7,"conf":"SEC","cr":"9-4","r":5},
+  "MIZZ":{"w":18,"l":8,"conf":"SEC","cr":"8-5","r":6},
+  "TXAM":{"w":18,"l":8,"conf":"SEC","cr":"8-5","r":7},
+  "UGA":{"w":18,"l":8,"conf":"SEC","cr":"6-7","r":8},
+  "TEX":{"w":17,"l":9,"conf":"SEC","cr":"8-5","r":9},
+  "UK":{"w":17,"l":9,"conf":"SEC","cr":"8-5","r":10},
+  "AUB":{"w":14,"l":12,"conf":"SEC","cr":"5-8","r":11},
+  "LSU":{"w":14,"l":12,"conf":"SEC","cr":"2-11","r":12},
+  "MSST":{"w":13,"l":13,"conf":"SEC","cr":"5-8","r":13},
+  "OKLA":{"w":13,"l":13,"conf":"SEC","cr":"3-10","r":14},
+  "MISS":{"w":11,"l":15,"conf":"SEC","cr":"3-10","r":15},
+  "SCAR":{"w":11,"l":15,"conf":"SEC","cr":"2-11","r":16},
+  "CONN":{"w":24,"l":3,"conf":"Big East","cr":"14-2","r":1},
+  "SJU":{"w":21,"l":5,"conf":"Big East","cr":"14-1","r":2},
+  "VILL":{"w":21,"l":5,"conf":"Big East","cr":"12-3","r":3},
+  "HALL":{"w":18,"l":9,"conf":"Big East","cr":"8-8","r":4},
+  "DEP":{"w":14,"l":12,"conf":"Big East","cr":"6-9","r":5},
+  "CREI":{"w":14,"l":13,"conf":"Big East","cr":"8-8","r":6},
+  "BUT":{"w":14,"l":13,"conf":"Big East","cr":"5-11","r":7},
+  "XAV":{"w":13,"l":13,"conf":"Big East","cr":"5-10","r":8},
+  "GTWN":{"w":13,"l":13,"conf":"Big East","cr":"5-10","r":9},
+  "PROV":{"w":11,"l":15,"conf":"Big East","cr":"4-11","r":10},
+  "MARQ":{"w":9,"l":18,"conf":"Big East","cr":"4-12","r":11},
+  "GONZ":{"w":26,"l":2,"conf":"WCC","cr":"14-1","r":1},
+  "SMC":{"w":24,"l":4,"conf":"WCC","cr":"13-2","r":2},
+  "SCU":{"w":22,"l":6,"conf":"WCC","cr":"13-2","r":3},
+  "USU":{"w":23,"l":3,"conf":"MWC","cr":"13-2","r":1},
+  "UNM":{"w":20,"l":6,"conf":"MWC","cr":"11-4","r":2},
+  "SDSU":{"w":18,"l":7,"conf":"MWC","cr":"12-3","r":3},
+  "GC":{"w":17,"l":9,"conf":"MWC","cr":"10-5","r":4},
+  "NEV":{"w":17,"l":9,"conf":"MWC","cr":"9-6","r":5},
+  "CSU":{"w":16,"l":10,"conf":"MWC","cr":"7-8","r":6},
+  "BSU":{"w":15,"l":11,"conf":"MWC","cr":"7-8","r":7},
+  "WYO":{"w":14,"l":12,"conf":"MWC","cr":"5-10","r":8},
+  "UNLV":{"w":13,"l":13,"conf":"MWC","cr":"8-7","r":9},
+  "FRES":{"w":12,"l":14,"conf":"MWC","cr":"6-9","r":10},
+  "SLU":{"w":24,"l":2,"conf":"A-10","cr":"12-1","r":1},
+  "VCU":{"w":21,"l":6,"conf":"A-10","cr":"12-2","r":2},
+  "DAY":{"w":17,"l":9,"conf":"A-10","cr":"8-5","r":4},
+  "DUQ":{"w":16,"l":10,"conf":"A-10","cr":"8-5","r":5},
+  "M-OH":{"w":26,"l":0,"conf":"MAC","cr":"13-0","r":1},
+  "AKR":{"w":21,"l":5,"conf":"MAC","cr":"12-1","r":2},
+  "KENT":{"w":20,"l":7,"conf":"MAC","cr":"11-3","r":3},
+  "BGSU":{"w":16,"l":11,"conf":"MAC","cr":"7-7","r":4},
+  "BUFF":{"w":15,"l":11,"conf":"MAC","cr":"5-8","r":5},
+  "BALL":{"w":8,"l":18,"conf":"MAC","cr":"3-10","r":13},
+  "TLSA":{"w":21,"l":6,"conf":"AAC","cr":"9-5","r":1},
+  "USF":{"w":19,"l":8,"conf":"AAC","cr":"11-3","r":2},
+  "WICH":{"w":17,"l":10,"conf":"AAC","cr":"9-5","r":3},
+  "TULN":{"w":16,"l":10,"conf":"AAC","cr":"7-6","r":5},
+  "UNT":{"w":15,"l":12,"conf":"AAC","cr":"6-8","r":8},
+  "USA":{"w":19,"l":9,"conf":"Sun Belt","cr":"9-6","r":1},
+  "TROY":{"w":18,"l":10,"conf":"Sun Belt","cr":"10-5","r":2},
+  "MRSH":{"w":18,"l":10,"conf":"Sun Belt","cr":"10-5","r":3},
+  "BEL":{"w":24,"l":4,"conf":"MVC","cr":"14-3","r":1},
+  "MURR":{"w":19,"l":10,"conf":"MVC","cr":"11-7","r":2},
+  "BRAD":{"w":18,"l":10,"conf":"MVC","cr":"11-6","r":3},
+  "GAST":{"w":10,"l":18,"conf":"Sun Belt","cr":"7-8","r":11},
+  "GASO":{"w":15,"l":13,"conf":"Sun Belt","cr":"7-8","r":8},
+  "YALE":{"w":20,"l":4,"conf":"Ivy","cr":"8-2","r":1},
+};
+function getS(t){ return STD[t]||{w:0,l:0,conf:"—",cr:"—",r:"?"}; }
+
+// Power ratings
+const PWR = {
+  "DUKE":92,"UK":89,"AUB":91,"TENN":90,"ALA":87,"LSU":82,"KU":91,"GONZ":88,
+  "BYU":82,"ISU":86,"CIN":80,"SJU":85,"CREI":84,"PUR":83,"IND":79,"BAY":83,
+  "UCLA":81,"ILL":80,"PITT":78,"ND":81,"MICH":94,"VAN":84,"CONN":86,"VILL":84,
+  "SLU":86,"ARIZ":92,"HOU":90,"FLA":84,"ARK":83,"TXAM":82,"MIA":84,"UVA":87,
+  "UNC":83,"CLEM":84,"LOU":82,"NCST":82,"SMC":86,"SCU":82,"USU":83,"UNM":81,
+  "SDSU":80,"M-OH":88,"AKR":80,"KENT":79,"TLSA":73,"USF":72,"WICH":73,"TULN":74,
+  "UNT":70,"BAY":83,"ASU":76,"TCU":77,"WVU":78,"OKST":77,"TTU":84,"KSU":72,
+  "UTAH":68,"COLO":75,"PSU":68,"NW":66,"RUTG":70,"MINN":68,"WASH":72,"ORE":66,
+  "MD":67,"OSU":78,"WIS":80,"USC":79,"IOWA":78,"MSST":72,"OKLA":71,"MISS":68,
+  "SCAR":68,"UGA":80,"TEX":82,"MIZZ":80,"NEB":82,"MSU":83,"GT":65,"WAKE":72,
+  "SYR":72,"FSU":70,"STAN":75,"CAL":77,"SMU":79,"VT":76,"BC":65,"MARQ":67,
+  "HALL":78,"XAV":72,"GTWN":72,"PROV":69,"DEP":71,"BUT":72,"NEV":74,"CSU":73,
+  "BSU":74,"WYO":69,"UNLV":70,"FRES":68,"GC":71,"PAC":65,"SMC":86,"SCU":82,
+  "ORST":70,"WSU":67,"PORT":65,"LMU":66,"PEPP":60,"DAY":78,"SLU":86,"VCU":80,
+  "DUQ":73,"GAST":66,"GASO":65,"USA":70,"TROY":69,"MRSH":72,"BEL":79,"MURR":74,
+  "BRAD":73,"TLSA":73,"AKR":80,"KENT":79,"BGSU":70,"BUFF":68,"BALL":58,
+  "M-OH":88,"MISS":68,"SCAR":68,"UNC":83,"CLEM":84,"LOU":82,"SJU":85,
+  "VAN":84,"FLA":84,"UK":89,"AUB":91,"MICH":94,"DUKE":92,"GONZ":88,
+  "YALE":72,"NEB":82,"PSU":68,"MINN":68,"ILL":80,"UCLA":81,"ISU":86,
+  "KU":91,"HOU":90,"ARIZ":92,"WIS":80,"IOWA":78,"LSU":82,"ALA":87,
+  "TENN":90,"ARK":83,"TEX":82,"UGA":80,"TXAM":82,"MIZZ":80,
+};
+function pwr(t){ return PWR[t]||65; }
+
+// ── REAL TEAM STATS (2025-26 season, sourced from FOX Sports / ESPN / CBS Sports) ──
+// ppg=points/g, opp=opp pts/g, reb=reb/g, ast=ast/g, fgp=FG%, tsp=TS%, offr=off rating, defr=def rating
+const TEAM_STATS = {
+  "MICH": {ppg:94.6,opp:68.5,reb:40.5,ast:20.1,fgp:52.3,tsp:63.5,offr:126.2,defr:91.4,stl:6.9,blk:6.2,note:"#2 nationally in scoring, leading scorer Lendeborg 14.7 PPG, +26.1 PPG differential, Cadeau 5.2 APG"},
+  "DUKE": {ppg:84.1,opp:63.6,reb:37.2,ast:17.1,fgp:49.9,tsp:61.1,offr:124.1,defr:93.8,stl:8.4,blk:3.7,note:"Cameron Boozer 23.3 PPG/9.9 RPG, +20.5 PPG differential, 8.4 SPG elite D, #1 ACC at 13-1 conf"},
+  "HOU":  {ppg:80.7,opp:62.4,reb:36.8,ast:16.5,fgp:46.8,tsp:58.2,offr:118.3,defr:90.1,stl:8.6,blk:4.1,note:"Sharp 16.3 PPG/65 threes, Cenac 7.5 RPG, Uzan 11.2 PPG/93 AST, nation's elite defense"},
+  "ARIZ": {ppg:87.7,opp:68.6,reb:43.7,ast:17.7,fgp:49.6,tsp:60.3,offr:120.5,defr:95.8,stl:6.2,blk:3.8,note:"5th nationally in rebounds (43.7 RPG), 15th in scoring, high-pace offense, 24-2"},
+  "KU":   {ppg:86.2,opp:67.4,reb:39.1,ast:18.3,fgp:48.7,tsp:59.8,offr:119.4,defr:93.2,stl:7.1,blk:3.5,note:"Darryn Peterson 5-star freshman, 20-6 overall, 10-3 Big 12, traditional powerhouse home court"},
+  "CIN":  {ppg:74.3,opp:72.1,reb:35.2,ast:15.4,fgp:44.1,tsp:54.6,offr:108.7,defr:105.3,stl:5.8,blk:2.9,note:"14-12, Big 12 #11, below-avg offense 74.3 PPG, road team today, D allows 72 PPG"},
+  "UK":   {ppg:82.9,opp:70.2,reb:34.8,ast:17.3,fgp:48.1,tsp:58.7,offr:121.6,defr:102.9,stl:7.8,blk:4.4,note:"Otega Oweh 15.6 PPG/2.1 SPG, 17-9 overall, 76th nationally in scoring, road team"},
+  "AUB":  {ppg:76.8,opp:72.4,reb:35.9,ast:14.8,fgp:44.9,tsp:55.1,offr:111.2,defr:104.6,stl:5.4,blk:3.2,note:"14-12, 5-game losing streak, SEC #11, 44.9 FG% below national avg, home standing hurt"},
+  "SJU":  {ppg:88.4,opp:67.2,reb:38.6,ast:18.9,fgp:50.1,tsp:61.4,offr:122.3,defr:91.7,stl:9.1,blk:4.2,note:"14-1 Big East, 91.3% win prob vs Creighton, 9.1 SPG (elite), 88.4 PPG dominant offense"},
+  "CREI": {ppg:79.6,opp:74.8,reb:34.4,ast:16.2,fgp:46.3,tsp:57.2,offr:114.8,defr:107.4,stl:6.3,blk:2.8,note:"8-8 Big East, +660 ML underdog, D gives up 74.8 PPG, 107.4 DefRtg in trouble zone"},
+  "VAN":  {ppg:83.7,opp:71.3,reb:36.2,ast:16.8,fgp:47.9,tsp:58.4,offr:118.6,defr:98.2,stl:6.7,blk:3.3,note:"21-5, SEC co-leader, Memorial Gym home advantage, 8-5 conf record, 83.7 PPG"},
+  "TENN": {ppg:79.4,opp:68.6,reb:37.8,ast:15.9,fgp:46.2,tsp:56.8,offr:114.1,defr:96.4,stl:7.2,blk:3.9,note:"19-7, 9-4 SEC #3, defensive-minded 96.4 DefRtg, road struggles 3-5 away this season"},
+  "UNC":  {ppg:83.1,opp:73.2,reb:38.4,ast:17.6,fgp:47.8,tsp:58.1,offr:116.9,defr:101.8,stl:6.8,blk:3.1,note:"20-6, 8-5 ACC, road favorite at Syracuse, guard-led attack, Tar Heels 4-1 last 5"},
+  "SYR":  {ppg:76.4,opp:76.8,reb:36.1,ast:15.3,fgp:43.8,tsp:54.2,offr:109.6,defr:108.7,stl:6.4,blk:2.7,note:"15-12, 6-8 ACC, 43.8 FG% poor shooting, zone vulnerable to ball movement, 108.7 DefRtg"},
+  "GONZ": {ppg:87.9,opp:68.1,reb:37.6,ast:19.4,fgp:51.2,tsp:62.8,offr:123.7,defr:92.3,stl:6.1,blk:3.8,note:"26-2, WCC #1, 51.2 FG% elite efficiency, 62.8 TS%, 19.4 APG ball movement"},
+  "CONN": {ppg:86.3,opp:65.4,reb:39.2,ast:19.8,fgp:50.8,tsp:62.1,offr:124.4,defr:89.6,stl:7.4,blk:4.6,note:"24-3, Big East #1, 89.6 DefRtg elite, 19.8 APG, 4.6 BPG shot-blocking force"},
+  "ISU":  {ppg:83.4,opp:66.8,reb:38.7,ast:17.4,fgp:48.6,tsp:59.7,offr:119.8,defr:91.9,stl:7.6,blk:3.4,note:"23-3, Big 12 #3, 91.9 DefRtg, Tamin Lipsey, strong conf road record 5-2 away"},
+  "M-OH": {ppg:84.2,opp:67.8,reb:37.9,ast:17.1,fgp:49.3,tsp:60.2,offr:120.1,defr:91.3,stl:7.3,blk:3.6,note:"26-0 perfect record, 91.3 DefRtg elite, MAC #1, 13-0 conf, -7.5 spread reflects MAC SOS"},
+  "BGSU": {ppg:72.4,opp:74.1,reb:34.8,ast:13.9,fgp:43.2,tsp:53.8,offr:106.4,defr:109.7,stl:5.2,blk:2.4,note:"16-11, MAC #4, 74.1 PPG allows, bottom-half offense, 43.2 FG% struggles shooting"},
+  "NEB":  {ppg:80.1,opp:69.4,reb:37.4,ast:16.2,fgp:47.3,tsp:57.9,offr:116.8,defr:97.2,stl:6.4,blk:3.1,note:"22-4, Big Ten #2, 11-4 conf, balanced scoring, 97.2 DefRtg solid defense"},
+  "PSU":  {ppg:71.8,opp:74.3,reb:34.6,ast:14.1,fgp:43.4,tsp:53.1,offr:104.7,defr:110.8,stl:5.6,blk:2.8,note:"11-16, Big Ten last, 2-14 conf, 71.8 PPG bottom quartile, 110.8 DefRtg poor defense"},
+  "FLA":  {ppg:84.7,opp:69.2,reb:38.9,ast:17.8,fgp:49.1,tsp:60.4,offr:121.3,defr:94.6,stl:7.9,blk:3.7,note:"20-6, SEC #2, 11-2 conf, dynamic 84.7 PPG offense, elite 94.6 DefRtg"},
+  "MISS": {ppg:72.6,opp:76.4,reb:34.2,ast:13.8,fgp:42.7,tsp:52.4,offr:105.3,defr:112.1,stl:5.3,blk:2.6,note:"11-15, SEC #15, 112.1 DefRtg poor, 42.7 FG% below average, struggling"},
+  "TTU":  {ppg:77.3,opp:65.8,reb:38.4,ast:15.6,fgp:45.8,tsp:55.9,offr:111.9,defr:90.3,stl:7.8,blk:3.9,note:"19-7, Big 12 #5, elite defense 90.3 DefRtg, knocked off Houston in Lubbock"},
+  "KSU":  {ppg:84.2,opp:77.8,reb:33.4,ast:15.9,fgp:46.2,tsp:57.1,offr:115.2,defr:110.4,stl:5.9,blk:2.7,note:"11-15, PJ Haggerty 23.3 PPG but poor defense 110.4 DefRtg, Big 12 last, 5-game L streak"},
+  "VILL": {ppg:82.7,opp:70.4,reb:36.8,ast:17.9,fgp:48.4,tsp:59.2,offr:119.6,defr:97.3,stl:6.8,blk:3.4,note:"21-5, Big East #3, 12-3 conf, balanced attack, 97.3 DefRtg solid, tournament lock"},
+  "SLU":  {ppg:83.9,opp:66.4,reb:38.2,ast:18.1,fgp:49.6,tsp:60.8,offr:122.4,defr:91.8,stl:7.2,blk:3.9,note:"24-2, A-10 #1, 91.8 DefRtg top-10 nationally, elite efficiency 60.8 TS%"},
+  "VCU":  {ppg:79.4,opp:68.1,reb:37.8,ast:17.3,fgp:47.1,tsp:58.6,offr:116.2,defr:93.7,stl:8.9,blk:3.2,note:"21-6, A-10 #2, Havoc defense 8.9 SPG elite, 93.7 DefRtg, known for press/steal game"},
+  "DALL": {ppg:76.2,opp:73.4,reb:35.6,ast:15.1,fgp:44.8,tsp:54.9,offr:110.3,defr:106.8,stl:6.1,blk:2.9,note:"Placeholder for teams without specific data"},
+};
+function getStat(t){ return TEAM_STATS[t]||null; }
+
+// ── REAL VEGAS LINES (FanDuel/DraftKings/BetMGM consensus, Feb 20-21 2026) ──
+// Negative = home team favored by that amount. Positive = away team favored.
+// Source: OddsShark, TheSpread.com, DraftKings/FanDuel live boards
+const REAL_LINES = {
+  // ── TONIGHT (Feb 20 CST) ──
+  "BALL-AKR":    14.5,   // Akron -14.5 (FD: -14.5 / DK: -14.5)
+  "IONA-SPC":   -6.0,    // Iona -6 home favorite
+  "FAIR-SHU":   -5.0,    // Fairfield -5 (TheSpread confirmed)
+  "SLU-VCU":    -7.5,    // Saint Louis -7.5 (TheSpread confirmed)
+  "BRWN-PRIN":   3.0,    // Princeton -3 (road fav)
+  "PUR-IND":    -11.5,   // Purdue -11.5 (TheSpread confirmed: Purdue home -11.5)
+  "M-OH-BGSU":  -7.5,    // Miami OH -7.5 (confirmed FanDuel/OddsShark — 26-0 but only -7.5)
+  // ── SATURDAY Feb 21 ──
+  "VT-WAKE":    -6.5,    // VT -6.5 home
+  "CLEM-FSU":   -12.0,   // Clemson -12 home
+  "MINN-RUTG":  -3.0,    // Minnesota -3 home
+  "MISS-FLA":    5.0,    // Florida -5 (road fav)
+  "SJU-CREI":   -13.5,   // St. John's -13.5 home (91% win prob, confirmed FOX/ESPN)
+  "SCAR-MSST":  -2.0,    // SCAR -2 home
+  "KU-CIN":     -10.5,   // Kansas -10.5 home (confirmed ESPN DraftKings live)
+  "SYR-UNC":     3.5,    // UNC -3.5 (road fav, confirmed ESPN live)
+  "BUT-XAV":    -2.0,    // Butler -2 home
+  "VAN-TENN":   -3.5,    // Vanderbilt -3.5 home (confirmed ESPN live)
+  "PITT-ND":     4.5,    // Notre Dame -4.5 (road fav)
+  "NEB-PSU":    -8.5,    // Nebraska -8.5 home
+  "UVA-MIA":    -4.0,    // Virginia -4 home
+  "LOU-GT":     -11.0,   // Louisville -11 home
+  "DAY-DUQ":    -8.5,    // Dayton -8.5 home
+  "TTU-KSU":    -9.0,    // Texas Tech -9 home
+  "HOU-ARIZ":   -4.5,    // Houston -4.5 home (CBS: opened -3.5, moved to -5.5)
+  "MD-WASH":    -4.0,    // Maryland -4 home
+  "UGA-TEX":     3.5,    // Texas -3.5 (road fav)
+  "COLO-OKST":  -2.0,    // Colorado -2 home
+  "ARK-MIZZ":   -4.5,    // Arkansas -4.5 home
+  "USC-ORE":    -3.5,    // USC -3.5 home
+  "BAY-ASU":    -5.5,    // Baylor -5.5 home
+  "TCU-WVU":    -3.0,    // TCU -3 home
+  "VILL-CONN":   5.0,    // UConn -5 (road fav — defending Big East)
+  "LSU-ALA":     4.5,    // Alabama -4.5 (road fav)
+  "HALL-GTWN":  -9.5,    // Seton Hall -9.5 home
+  "DUKE-MICH":   2.5,    // Michigan -2.5 ROAD FAV at Duke (confirmed ESPN/BetMGM/FOX)
+  // ── SUNDAY Feb 22 ──
+  "UCLA-ILL":    2.0,    // Illinois -2 (road fav)
+  "AUB-UK":      2.5,    // Kentucky -2.5 ROAD FAV at Auburn (Auburn 5-game L streak)
+  "OKLA-TXAM":   3.5,    // Texas A&M -3.5 (road fav)
+  "BYU-ISU":     3.5,    // Iowa State -3.5 (road fav)
+  "GONZ-PAC":   -22.5,   // Gonzaga -22.5 home
+  "MSU-OSU":    -4.5,    // Michigan State -4.5 home
+  "WIS-IOWA":   -2.5,    // Wisconsin -2.5 home
+  // ── LATER WEEK ──
+  "KU-HOU":     -1.5,    // Kansas -1.5 home (rematch)
+  "ND-DUKE":     8.0,    // Duke -8 (road fav)
+  "IND-NW":     -6.5,    // Indiana -6.5 home
+  "SCAR-UK":     6.0,    // Kentucky -6 (road fav)
+  "CONN-SJU":   -3.0,    // UConn -3 home (rematch)
+  "VAN-UGA":    -6.0,    // Vanderbilt -6 home
+  "MICH-MINN":  -17.5,   // Michigan -17.5 home
+  "MIZZ-TENN":   2.5,    // Tennessee -2.5 (road fav)
+  "BAY-ARIZ":    3.5,    // Arizona -3.5 (road fav)
+  "UCLA-USC":   -1.5,    // UCLA -1.5 home
+  "TEX-FLA":    -1.5,    // Texas -1.5 home
+  "NEB-MD":     -5.5,    // Nebraska -5.5 home
+  "ARK-TXAM":   -3.0,    // Arkansas -3 home
+  "MISS-LSU":    3.0,    // LSU -3 (road fav)
+  "IOWA-OSU":   -3.5,    // Iowa -3.5 home
+  "GONZ-PORT":  -24.5,   // Gonzaga -24.5 home
+  "ORE-WIS":     3.5,    // Wisconsin -3.5 (road fav)
+  "PUR-MSU":    -2.5,    // Purdue -2.5 home
+  "ILL-MICH":    7.5,    // Michigan -7.5 (road fav)
+  "CONN-SJU2":  -3.0,    // UConn -3 home
+};
+
+function predSpread(h,a){
+  const key = h + '-' + a;
+  const keyRev = a + '-' + h;
+  if(REAL_LINES[key] !== undefined) return REAL_LINES[key];
+  if(REAL_LINES[keyRev] !== undefined) return -REAL_LINES[keyRev];
+  // Fallback: algorithmic estimate when no real line available
+  const diff = (pwr(h)-pwr(a))*0.28 + 3.5;
+  const seed = (h.charCodeAt(0)*3+a.charCodeAt(0)*7)%11-5;
+  return Math.round((diff+seed*0.3)*2)/2;
+}
+function confPct(sp){
+  const a=Math.abs(sp);
+  if(a>=15)return 94; if(a>=10)return 84+(a-10);
+  if(a>=6)return 72+(a-6)*3; if(a>=3)return 62+(a-3)*2;
+  if(a>=1)return 55; return 50;
+}
+function sig(sp,c){ if(Math.abs(sp)<1.5)return'toss'; if(c>=68)return'cover'; if(c<=54)return'fade'; return'push'; }
+function cardCls(sp,c){ if(c>=80)return'hot'; if(Math.abs(sp)>=5&&c>=68)return'value'; if(Math.abs(sp)<2)return'risky'; return''; }
+function fmtSp(v){ return v>0?`+${v}`:`${v}`; }
+function toCST(u){
+  const d=new Date(u);
+  const c=new Date(d.getTime()-6*3600000);
+  let h=c.getUTCHours(),m=c.getUTCMinutes();
+  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  return `${h}:${m.toString().padStart(2,'0')} ${ap}`;
+}
+function utcDay(u){
+  // Return the UTC date string YYYY-MM-DD adjusted to CST day
+  const d=new Date(u);
+  const c=new Date(d.getTime()-6*3600000);
+  return c.toISOString().slice(0,10);
+}
+function fmtDayLabel(d){
+  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dt=new Date(d+'T12:00:00Z');
+  return `${days[dt.getUTCDay()]} ${months[dt.getUTCMonth()]} ${dt.getUTCDate()}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  RAW GAME DATA (from API, injected)
+// ═══════════════════════════════════════════════════════
+const RAW_GAMES = [
+  // ── FINAL GAMES (Feb 20) ──
+  {id:"g1",status:"closed",start_time:"2026-02-20T01:00:00+00:00",home:"UVU",away:"CBU",homeFull:"Utah Valley Wolverines",awayFull:"California Baptist",homeScore:65,awayScore:46},
+  {id:"g2",status:"closed",start_time:"2026-02-20T01:00:00+00:00",home:"GAST",away:"GASO",homeFull:"Georgia State Panthers",awayFull:"Georgia Southern",homeScore:66,awayScore:64},
+  {id:"g3",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"FAMU",away:"AAMU",homeFull:"Florida A&M Rattlers",awayFull:"Alabama A&M",homeScore:61,awayScore:63},
+  {id:"g4",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"TNTC",away:"SIUE",homeFull:"Tennessee Tech",awayFull:"SIU Edwardsville",homeScore:62,awayScore:52},
+  {id:"g5",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"ARPB",away:"TXSO",homeFull:"AR-Pine Bluff",awayFull:"Texas Southern",homeScore:64,awayScore:83},
+  {id:"g6",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"EIU",away:"MORE",homeFull:"Eastern Illinois",awayFull:"Morehead State",homeScore:70,awayScore:73},
+  {id:"g7",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"MVSU",away:"PV",homeFull:"Mississippi Valley State",awayFull:"Prairie View A&M",homeScore:62,awayScore:72},
+  {id:"g8",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"TNST",away:"LINW",homeFull:"Tennessee State",awayFull:"Lindenwood",homeScore:89,awayScore:80},
+  {id:"g9",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"WIU",away:"USI",homeFull:"Western Illinois",awayFull:"Southern Indiana",homeScore:70,awayScore:77},
+  {id:"g10",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"WEB",away:"MTST",homeFull:"Weber State",awayFull:"Montana State",homeScore:82,awayScore:79},
+  {id:"g11",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"DEN",away:"SDAK",homeFull:"Denver Pioneers",awayFull:"South Dakota",homeScore:90,awayScore:70},
+  {id:"g12",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"UNT",away:"TULN",homeFull:"North Texas",awayFull:"Tulane Green Wave",homeScore:71,awayScore:77},
+  {id:"g13",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"PRST",away:"IDHO",homeFull:"Portland State",awayFull:"Idaho Vandals",homeScore:77,awayScore:67},
+  {id:"g14",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"UCSB",away:"CSN",homeFull:"UC Santa Barbara",awayFull:"Cal State Northridge",homeScore:83,awayScore:85},
+  {id:"g15",status:"closed",start_time:"2026-02-20T02:00:00+00:00",home:"IDST",away:"MONT",homeFull:"Idaho State",awayFull:"Montana Grizzlies",homeScore:73,awayScore:69},
+  {id:"g16",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"CSF",away:"UCD",homeFull:"Cal State Fullerton",awayFull:"UC Davis",homeScore:93,awayScore:92},
+  {id:"g17",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"SAC",away:"EWU",homeFull:"Sacramento State",awayFull:"Eastern Washington",homeScore:94,awayScore:102},
+  {id:"g18",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"UCRV",away:"CSB",homeFull:"UC Riverside",awayFull:"Cal St. Bakersfield",homeScore:93,awayScore:65},
+  {id:"g19",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"LBSU",away:"UCI",homeFull:"Long Beach State",awayFull:"UC Irvine",homeScore:58,awayScore:69},
+  {id:"g20",status:"closed",start_time:"2026-02-20T05:00:00+00:00",home:"HAW",away:"CP",homeFull:"Hawai'i Rainbow Warriors",awayFull:"Cal Poly",homeScore:75,awayScore:86},
+  // ── TODAY UPCOMING (Feb 20 CST — games still to play) ──
+  {id:"u1",status:"scheduled",start_time:"2026-02-20T23:30:00+00:00",home:"BALL",away:"AKR",homeFull:"Ball State Cardinals",awayFull:"Akron Zips"},
+  {id:"u2",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"IONA",away:"SPC",homeFull:"Iona Gaels",awayFull:"Saint Peter's Peacocks"},
+  {id:"u3",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"FAIR",away:"SHU",homeFull:"Fairfield Stags",awayFull:"Sacred Heart"},
+  {id:"u4",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"SLU",away:"VCU",homeFull:"Saint Louis Billikens",awayFull:"VCU Rams"},
+  {id:"u5",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"BRWN",away:"PRIN",homeFull:"Brown Bears",awayFull:"Princeton Tigers"},
+  {id:"u6",status:"scheduled",start_time:"2026-02-21T01:00:00+00:00",home:"PUR",away:"IND",homeFull:"Purdue Boilermakers",awayFull:"Indiana Hoosiers"},
+  {id:"u7",status:"scheduled",start_time:"2026-02-21T01:30:00+00:00",home:"M-OH",away:"BGSU",homeFull:"Miami (OH) RedHawks",awayFull:"Bowling Green Falcons"},
+  // ── THIS WEEK (Feb 21+) ──
+  {id:"w1",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"VT",away:"WAKE",homeFull:"Virginia Tech Hokies",awayFull:"Wake Forest"},
+  {id:"w2",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"CLEM",away:"FSU",homeFull:"Clemson Tigers",awayFull:"Florida State"},
+  {id:"w3",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"MINN",away:"RUTG",homeFull:"Minnesota Golden Gophers",awayFull:"Rutgers Scarlet Knights"},
+  {id:"w4",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"MISS",away:"FLA",homeFull:"Ole Miss Rebels",awayFull:"Florida Gators"},
+  {id:"w5",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"SJU",away:"CREI",homeFull:"St. John's Red Storm",awayFull:"Creighton Bluejays"},
+  {id:"w6",status:"scheduled",start_time:"2026-02-21T18:00:00+00:00",home:"SCAR",away:"MSST",homeFull:"South Carolina Gamecocks",awayFull:"Mississippi State"},
+  {id:"w7",status:"scheduled",start_time:"2026-02-21T18:00:00+00:00",home:"KU",away:"CIN",homeFull:"Kansas Jayhawks",awayFull:"Cincinnati Bearcats"},
+  {id:"w8",status:"scheduled",start_time:"2026-02-21T18:00:00+00:00",home:"SYR",away:"UNC",homeFull:"Syracuse Orange",awayFull:"North Carolina Tar Heels"},
+  {id:"w9",status:"scheduled",start_time:"2026-02-21T18:00:00+00:00",home:"BUT",away:"XAV",homeFull:"Butler Bulldogs",awayFull:"Xavier Musketeers"},
+  {id:"w10",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"VAN",away:"TENN",homeFull:"Vanderbilt Commodores",awayFull:"Tennessee Volunteers"},
+  {id:"w11",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"PITT",away:"ND",homeFull:"Pittsburgh Panthers",awayFull:"Notre Dame Fighting Irish"},
+  {id:"w12",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"NEB",away:"PSU",homeFull:"Nebraska Cornhuskers",awayFull:"Penn State Nittany Lions"},
+  {id:"w13",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"UVA",away:"MIA",homeFull:"Virginia Cavaliers",awayFull:"Miami (FL) Hurricanes"},
+  {id:"w14",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"LOU",away:"GT",homeFull:"Louisville Cardinals",awayFull:"Georgia Tech"},
+  {id:"w15",status:"scheduled",start_time:"2026-02-21T19:00:00+00:00",home:"DAY",away:"DUQ",homeFull:"Dayton Flyers",awayFull:"Duquesne Dukes"},
+  {id:"w16",status:"scheduled",start_time:"2026-02-21T19:30:00+00:00",home:"TTU",away:"KSU",homeFull:"Texas Tech Red Raiders",awayFull:"Kansas State"},
+  {id:"w17",status:"scheduled",start_time:"2026-02-21T20:00:00+00:00",home:"HOU",away:"ARIZ",homeFull:"Houston Cougars",awayFull:"Arizona Wildcats"},
+  {id:"w18",status:"scheduled",start_time:"2026-02-21T20:00:00+00:00",home:"MD",away:"WASH",homeFull:"Maryland Terrapins",awayFull:"Washington Huskies"},
+  {id:"w19",status:"scheduled",start_time:"2026-02-21T20:30:00+00:00",home:"UGA",away:"TEX",homeFull:"Georgia Bulldogs",awayFull:"Texas Longhorns"},
+  {id:"w20",status:"scheduled",start_time:"2026-02-21T20:30:00+00:00",home:"COLO",away:"OKST",homeFull:"Colorado Buffaloes",awayFull:"Oklahoma State"},
+  {id:"w21",status:"scheduled",start_time:"2026-02-21T21:00:00+00:00",home:"ARK",away:"MIZZ",homeFull:"Arkansas Razorbacks",awayFull:"Missouri Tigers"},
+  {id:"w22",status:"scheduled",start_time:"2026-02-21T21:00:00+00:00",home:"USC",away:"ORE",homeFull:"USC Trojans",awayFull:"Oregon Ducks"},
+  {id:"w23",status:"scheduled",start_time:"2026-02-21T21:00:00+00:00",home:"BAY",away:"ASU",homeFull:"Baylor Bears",awayFull:"Arizona State"},
+  {id:"w24",status:"scheduled",start_time:"2026-02-21T22:00:00+00:00",home:"TCU",away:"WVU",homeFull:"TCU Horned Frogs",awayFull:"West Virginia Mountaineers"},
+  {id:"w25",status:"scheduled",start_time:"2026-02-21T22:30:00+00:00",home:"VILL",away:"CONN",homeFull:"Villanova Wildcats",awayFull:"UConn Huskies"},
+  {id:"w26",status:"scheduled",start_time:"2026-02-21T23:00:00+00:00",home:"LSU",away:"ALA",homeFull:"LSU Tigers",awayFull:"Alabama Crimson Tide"},
+  {id:"w27",status:"scheduled",start_time:"2026-02-21T23:00:00+00:00",home:"HALL",away:"GTWN",homeFull:"Seton Hall Pirates",awayFull:"Georgetown Hoyas"},
+  {id:"w28",status:"scheduled",start_time:"2026-02-21T23:30:00+00:00",home:"DUKE",away:"MICH",homeFull:"Duke Blue Devils",awayFull:"Michigan Wolverines"},
+  {id:"w29",status:"scheduled",start_time:"2026-02-22T00:00:00+00:00",home:"UCLA",away:"ILL",homeFull:"UCLA Bruins",awayFull:"Illinois Fighting Illini"},
+  {id:"w30",status:"scheduled",start_time:"2026-02-22T01:00:00+00:00",home:"AUB",away:"UK",homeFull:"Auburn Tigers",awayFull:"Kentucky Wildcats"},
+  {id:"w31",status:"scheduled",start_time:"2026-02-22T01:30:00+00:00",home:"OKLA",away:"TXAM",homeFull:"Oklahoma Sooners",awayFull:"Texas A&M Aggies"},
+  {id:"w32",status:"scheduled",start_time:"2026-02-22T02:00:00+00:00",home:"BYU",away:"ISU",homeFull:"BYU Cougars",awayFull:"Iowa State Cyclones"},
+  {id:"w33",status:"scheduled",start_time:"2026-02-22T02:00:00+00:00",home:"GONZ",away:"PAC",homeFull:"Gonzaga Bulldogs",awayFull:"Pacific Tigers"},
+  {id:"w34",status:"scheduled",start_time:"2026-02-22T18:00:00+00:00",home:"MSU",away:"OSU",homeFull:"Michigan State Spartans",awayFull:"Ohio State Buckeyes"},
+  {id:"w35",status:"scheduled",start_time:"2026-02-22T21:00:00+00:00",home:"WIS",away:"IOWA",homeFull:"Wisconsin Badgers",awayFull:"Iowa Hawkeyes"},
+  {id:"w36",status:"scheduled",start_time:"2026-02-24T02:00:00+00:00",home:"KU",away:"HOU",homeFull:"Kansas Jayhawks",awayFull:"Houston Cougars"},
+  {id:"w37",status:"scheduled",start_time:"2026-02-25T00:00:00+00:00",home:"ND",away:"DUKE",homeFull:"Notre Dame Fighting Irish",awayFull:"Duke Blue Devils"},
+  {id:"w38",status:"scheduled",start_time:"2026-02-25T00:00:00+00:00",home:"IND",away:"NW",homeFull:"Indiana Hoosiers",awayFull:"Northwestern Wildcats"},
+  {id:"w39",status:"scheduled",start_time:"2026-02-25T00:00:00+00:00",home:"SCAR",away:"UK",homeFull:"South Carolina Gamecocks",awayFull:"Kentucky Wildcats"},
+  {id:"w40",status:"scheduled",start_time:"2026-02-25T00:00:00+00:00",home:"CONN",away:"SJU",homeFull:"UConn Huskies",awayFull:"St. John's Red Storm"},
+  {id:"w41",status:"scheduled",start_time:"2026-02-25T00:00:00+00:00",home:"VAN",away:"UGA",homeFull:"Vanderbilt Commodores",awayFull:"Georgia Bulldogs"},
+  {id:"w42",status:"scheduled",start_time:"2026-02-25T01:30:00+00:00",home:"MICH",away:"MINN",homeFull:"Michigan Wolverines",awayFull:"Minnesota Golden Gophers"},
+  {id:"w43",status:"scheduled",start_time:"2026-02-25T02:00:00+00:00",home:"MIZZ",away:"TENN",homeFull:"Missouri Tigers",awayFull:"Tennessee Volunteers"},
+  {id:"w44",status:"scheduled",start_time:"2026-02-25T02:00:00+00:00",home:"BAY",away:"ARIZ",homeFull:"Baylor Bears",awayFull:"Arizona Wildcats"},
+  {id:"w45",status:"scheduled",start_time:"2026-02-25T04:00:00+00:00",home:"UCLA",away:"USC",homeFull:"UCLA Bruins",awayFull:"USC Trojans"},
+  {id:"w46",status:"scheduled",start_time:"2026-02-26T00:00:00+00:00",home:"CONN",away:"SJU",homeFull:"UConn Huskies",awayFull:"St. John's Red Storm"},
+  {id:"w47",status:"scheduled",start_time:"2026-02-26T00:00:00+00:00",home:"TEX",away:"FLA",homeFull:"Texas Longhorns",awayFull:"Florida Gators"},
+  {id:"w48",status:"scheduled",start_time:"2026-02-26T00:00:00+00:00",home:"NEB",away:"MD",homeFull:"Nebraska Cornhuskers",awayFull:"Maryland Terrapins"},
+  {id:"w49",status:"scheduled",start_time:"2026-02-26T02:00:00+00:00",home:"ARK",away:"TXAM",homeFull:"Arkansas Razorbacks",awayFull:"Texas A&M Aggies"},
+  {id:"w50",status:"scheduled",start_time:"2026-02-26T02:00:00+00:00",home:"MISS",away:"LSU",homeFull:"Ole Miss Rebels",awayFull:"LSU Tigers"},
+  {id:"w51",status:"scheduled",start_time:"2026-02-26T02:00:00+00:00",home:"IOWA",away:"OSU",homeFull:"Iowa Hawkeyes",awayFull:"Ohio State Buckeyes"},
+  {id:"w52",status:"scheduled",start_time:"2026-02-26T02:00:00+00:00",home:"GONZ",away:"PORT",homeFull:"Gonzaga Bulldogs",awayFull:"Portland Pilots"},
+  {id:"w53",status:"scheduled",start_time:"2026-02-26T04:00:00+00:00",home:"ORE",away:"WIS",homeFull:"Oregon Ducks",awayFull:"Wisconsin Badgers"},
+  {id:"w54",status:"scheduled",start_time:"2026-02-27T01:00:00+00:00",home:"PUR",away:"MSU",homeFull:"Purdue Boilermakers",awayFull:"Michigan State Spartans"},
+  {id:"w55",status:"scheduled",start_time:"2026-02-28T01:00:00+00:00",home:"ILL",away:"MICH",homeFull:"Illinois Fighting Illini",awayFull:"Michigan Wolverines"},
+];
+
+// ═══════════════════════════════════════════════════════
+//  CATEGORIZE
+// ═══════════════════════════════════════════════════════
+// Today in CST = 2026-02-20
+const TODAY_CST = "2026-02-20";
+
+const finalGames   = RAW_GAMES.filter(g => g.status === "closed");
+const todayGames   = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) === TODAY_CST);
+const weekGames    = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) > TODAY_CST);
+
+// ═══════════════════════════════════════════════════════
+//  CURRENT TAB
+// ═══════════════════════════════════════════════════════
+let currentTab = 'today';
+let activeCard = null;
+
+// Update header counts
+document.getElementById('stat-today').textContent  = todayGames.length;
+document.getElementById('stat-week').textContent   = weekGames.length;
+document.getElementById('stat-final').textContent  = finalGames.length;
+document.getElementById('tc-today').textContent    = todayGames.length;
+document.getElementById('tc-week').textContent     = weekGames.length;
+document.getElementById('tc-final').textContent    = finalGames.length;
+
+function setTab(t) {
+  currentTab = t;
+  ['today','week','final'].forEach(x => {
+    const btn = document.getElementById('tab-'+x);
+    btn.classList.remove('active','active-week','active-final');
+  });
+  if(t==='today')  document.getElementById('tab-today').classList.add('active');
+  if(t==='week')   document.getElementById('tab-week').classList.add('active-week');
+  if(t==='final')  document.getElementById('tab-final').classList.add('active-final');
+  renderList();
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER LIST
+// ═══════════════════════════════════════════════════════
+function renderList() {
+  const gl = document.getElementById('gameList');
+  if(currentTab === 'today')  gl.innerHTML = renderUpcomingSection(todayGames, true);
+  if(currentTab === 'week')   gl.innerHTML = renderWeekSections(weekGames);
+  if(currentTab === 'final')  gl.innerHTML = renderFinalSection(finalGames);
+}
+
+function renderUpcomingSection(games, isToday) {
+  if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">NO ${isToday?'UPCOMING':'UPCOMING'} GAMES<br>CHECK BACK LATER</div></div>`;
+  const sorted = [...games].sort((a,b)=>{
+    const spA = Math.abs(predSpread(a.home,a.away));
+    const spB = Math.abs(predSpread(b.home,b.away));
+    return spB - spA;
+  });
+  return `<div class="day-hdr"><div class="day-title">${isToday ? 'FRI FEB 20 — TONIGHT' : 'UPCOMING GAMES'}</div><div class="day-line"></div><div class="day-ct">${games.length} GAMES · SORTED BY CONFIDENCE</div></div>`
+    + sorted.map(renderUpCard).join('');
+}
+
+function renderWeekSections(games) {
+  if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">NO UPCOMING GAMES THIS WEEK</div></div>`;
+  // Group by CST day
+  const byDay = {};
+  games.forEach(g => {
+    const d = utcDay(g.start_time);
+    if(!byDay[d]) byDay[d] = [];
+    byDay[d].push(g);
+  });
+  const days = Object.keys(byDay).sort();
+  return days.map(d => {
+    const dGames = [...byDay[d]].sort((a,b) => new Date(a.start_time)-new Date(b.start_time));
+    return `<div class="day-hdr"><div class="day-title">${fmtDayLabel(d)}</div><div class="day-line"></div><div class="day-ct">${dGames.length} GAMES</div></div>`
+      + dGames.map(renderUpCard).join('');
+  }).join('');
+}
+
+function renderFinalSection(games) {
+  if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">🏀</div><div class="empty-state-text">NO COMPLETED GAMES YET TODAY</div></div>`;
+  return `<div class="day-hdr"><div class="day-title">FRI FEB 20 — FINAL RESULTS</div><div class="day-line"></div><div class="day-ct">${games.length} GAMES</div></div>`
+    + games.map(renderFinalCard).join('');
+}
+
+function renderUpCard(g) {
+  const sp = predSpread(g.home, g.away);
+  const c  = confPct(sp);
+  const s  = sig(sp,c);
+  const cc = cardCls(sp,c);
+  const cC = c>=75?'hi':c>=60?'md':'lo';
+  const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
+  const fav = sp<0?g.home:sp>0?g.away:'—';
+  const t = toCST(g.start_time);
+  const hot = cc==='hot';
+  return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
+    <div class="gc-time"><strong>${t}</strong>CT</div>
+    <div class="gc-teams">
+      <div class="gc-team"><span class="gc-abv">${g.home}</span><span class="gc-fullname">${g.homeFull}</span></div>
+      <div class="gc-team"><span class="gc-abv">${g.away}</span><span class="gc-fullname">${g.awayFull}</span></div>
+    </div>
+    <div class="gc-spread">
+      <div class="gc-spread-lbl">SPREAD</div>
+      <div class="gc-spread-val pick">${fmtSp(sp)}</div>
+      <div class="gc-spread-team">${fav} FAV</div>
+    </div>
+    <div class="gc-conf">
+      <div class="gc-conf-lbl">CONF</div>
+      <div class="gc-conf-val ${cC}">${c}%</div>
+      <div class="gc-bar-wrap"><div class="gc-bar" style="width:${c}%;background:${barC}"></div></div>
+    </div>
+    <div class="gc-signal">
+      <span class="tag ${s}">${s.toUpperCase()}</span>
+      <span class="tag await">UPCOMING</span>
+    </div>
+    <span class="gc-badge ${hot?'hot-pick':'upcoming'}">${hot?'🔥 HOT':'UPCOMING'}</span>
+  </div>`;
+}
+
+function renderFinalCard(g) {
+  const sp = predSpread(g.home, g.away);
+  const c  = confPct(sp);
+  const s  = sig(sp,c);
+  const cc = cardCls(sp,c);
+  const cC = c>=75?'hi':c>=60?'md':'lo';
+  const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
+  const fav = sp<0?g.home:sp>0?g.away:'—';
+  const homeWon = g.homeScore > g.awayScore;
+  const actual  = g.homeScore - g.awayScore;
+  const coverLine = -sp;
+  let res = 'pushed';
+  if(actual > coverLine+0.4) res='covered';
+  else if(actual < coverLine-0.4) res='missed';
+  const t = toCST(g.start_time);
+  return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
+    <div class="gc-time"><strong>${t}</strong>CT</div>
+    <div class="gc-teams">
+      <div class="gc-team ${homeWon?'winner':'loser'}"><span class="gc-abv">${g.home}</span><span class="gc-fullname">${g.homeFull}</span><span class="gc-score">${g.homeScore}</span></div>
+      <div class="gc-team ${!homeWon?'winner':'loser'}"><span class="gc-abv">${g.away}</span><span class="gc-fullname">${g.awayFull}</span><span class="gc-score">${g.awayScore}</span></div>
+    </div>
+    <div class="gc-spread">
+      <div class="gc-spread-lbl">SPREAD</div>
+      <div class="gc-spread-val fav">${fmtSp(sp)}</div>
+      <div class="gc-spread-team">${fav} FAV</div>
+    </div>
+    <div class="gc-conf">
+      <div class="gc-conf-lbl">CONF</div>
+      <div class="gc-conf-val ${cC}">${c}%</div>
+      <div class="gc-bar-wrap"><div class="gc-bar" style="width:${c}%;background:${barC}"></div></div>
+    </div>
+    <div class="gc-signal">
+      <span class="tag ${s}">${s.toUpperCase()}</span>
+      <span class="result-tag ${res}">${res==='covered'?'✓ COVERED':res==='missed'?'✗ MISSED':'~ PUSH'}</span>
+    </div>
+    <span class="gc-badge final">FINAL</span>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  ANALYSIS PANEL
+// ═══════════════════════════════════════════════════════
+function closePanel() {
+  document.getElementById('ap').classList.add('collapsed');
+  if(activeCard){ document.getElementById(activeCard)?.classList.remove('active-card'); activeCard=null; }
+}
+
+function selectGame(id) {
+  const g = RAW_GAMES.find(x=>x.id===id);
+  if(!g) return;
+  if(activeCard){ document.getElementById(activeCard)?.classList.remove('active-card'); }
+  document.getElementById(id)?.classList.add('active-card');
+  activeCard = id;
+
+  const panel = document.getElementById('ap');
+  panel.classList.remove('collapsed');
+
+  const hS = getS(g.home), aS = getS(g.away);
+  const sp = predSpread(g.home, g.away);
+  const c  = confPct(sp);
+
+  // Matchup
+  document.getElementById('apMatchup').innerHTML = `
+    <div class="apt home">
+      <div class="apt-abv">${g.home}</div>
+      <div class="apt-name">${g.homeFull}</div>
+      <div class="apt-rec">${hS.w}-${hS.l} · ${hS.conf}</div>
+    </div>
+    <div class="ap-vs">vs</div>
+    <div class="apt away">
+      <div class="apt-abv">${g.away}</div>
+      <div class="apt-name">${g.awayFull}</div>
+      <div class="apt-rec">${aS.w}-${aS.l} · ${aS.conf}</div>
+    </div>`;
+
+  const cColor = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
+  document.getElementById('apMetrics').innerHTML = `
+    <div class="apm">
+      <div class="apm-lbl">PRED SPREAD</div>
+      <div class="apm-val" style="color:${sp<0?'var(--red)':'var(--blue)'}">${fmtSp(sp)}</div>
+      <div class="apm-sub">${sp<0?g.home:sp>0?g.away:'EVEN'} favored</div>
+    </div>
+    <div class="apm">
+      <div class="apm-lbl">CONFIDENCE</div>
+      <div class="apm-val" style="color:${cColor}">${c}%</div>
+      <div class="apm-sub">${c>=75?'HIGH':c>=60?'MODERATE':'LOW'} signal</div>
+    </div>
+    <div class="apm">
+      <div class="apm-lbl">${g.status==='closed'?'ACTUAL MARGIN':'GAME TIME'}</div>
+      <div class="apm-val" style="color:var(--gold)">${g.status==='closed'?fmtSp(g.homeScore-g.awayScore):toCST(g.start_time)}</div>
+      <div class="apm-sub">${g.status==='closed'?`${g.homeScore}-${g.awayScore}`:'CT · HOME COURT'}</div>
+    </div>`;
+
+  document.getElementById('apBody').innerHTML = `<div class="ai-loading"><div class="ai-spinner"></div><div class="ai-loading-text">ANALYZING ${g.home} vs ${g.away}</div></div>`;
+  runAI(g, hS, aS, sp, c);
+}
+
+async function runAI(g, hS, aS, sp, c) {
+  const isFinal   = g.status === 'closed';
+  const favTeam   = sp < 0 ? g.home : sp > 0 ? g.away : null;
+  const favFull   = sp < 0 ? g.homeFull : sp > 0 ? g.awayFull : 'Neither team';
+  const dogTeam   = sp < 0 ? g.away : sp > 0 ? g.home : null;
+  const absSpread = Math.abs(sp);
+  const sigLabel  = sig(sp, c);
+  const spreadStr = favTeam ? (favTeam + ' -' + absSpread) : 'PICK EM';
+  const pwrDiff   = pwr(g.home) - pwr(g.away);
+  const pwrFav    = pwrDiff >= 0 ? g.home : g.away;
+  const absPwr    = Math.abs(pwrDiff);
+  const netEdge   = (absPwr * 0.28 + 3.5).toFixed(1);
+  const margin    = isFinal ? (g.homeScore - g.awayScore) : 0;
+  const covered   = isFinal ? Math.abs(margin) > absSpread - 0.5 : false;
+
+  // Pre-build conditional fragments (avoids nested template literals)
+  const statusLine = isFinal
+    ? 'RESULT: FINAL — ' + g.home + ' ' + g.homeScore + ', ' + g.away + ' ' + g.awayScore
+      + ' | Margin: ' + (margin >= 0 ? '+' : '') + margin
+      + ' | Pick: ' + (covered ? 'COVERED ✓' : 'MISSED ✗')
+    : 'UPCOMING — ' + toCST(g.start_time) + ' CT';
+
+  const toneInstr = isFinal
+    ? (covered
+        ? 'The pick COVERED. Explain what drove the result and why the model was right.'
+        : 'The pick MISSED. Explain honestly what caused the underperformance while noting the pick still had logical merit.')
+    : (c >= 75
+        ? 'Write with strong conviction. This is a HIGH confidence pick.'
+        : c >= 60
+        ? 'Write with measured confidence. Solid pick but acknowledge it could be close.'
+        : 'Write with cautious reasoning. Acknowledge the toss-up nature while defending the angle.');
+
+  const spreadJustify = isFinal
+    ? 'Evaluate whether the actual ' + g.homeScore + '-' + g.awayScore + ' final (' + (margin >= 0 ? '+' : '') + margin + ') validated or undercut the ' + spreadStr + ' prediction and why.'
+    : 'Make the ATS case for ' + (favTeam || g.home) + ' covering ' + absSpread + ' points tonight.';
+
+  const verdictStart = spreadStr + ' —';
+
+  // Pull real team stats if available
+  const hStat = getStat(g.home);
+  const aStat = getStat(g.away);
+  const hStatLine = hStat
+    ? g.home + ' REAL STATS: ' + hStat.ppg + ' PPG | ' + hStat.opp + ' OPP PPG | ' + hStat.reb + ' RPG | ' + hStat.ast + ' APG | ' + hStat.fgp + '% FG | ' + hStat.tsp + '% TS | OffRtg ' + hStat.offr + ' | DefRtg ' + hStat.defr + ' | ' + hStat.stl + ' SPG | ' + hStat.blk + ' BPG\n  Context: ' + hStat.note
+    : g.home + ': Advanced stats not available — use power rating ' + pwr(g.home);
+  const aStatLine = aStat
+    ? g.away + ' REAL STATS: ' + aStat.ppg + ' PPG | ' + aStat.opp + ' OPP PPG | ' + aStat.reb + ' RPG | ' + aStat.ast + ' APG | ' + aStat.fgp + '% FG | ' + aStat.tsp + '% TS | OffRtg ' + aStat.offr + ' | DefRtg ' + aStat.defr + ' | ' + aStat.stl + ' SPG | ' + aStat.blk + ' BPG\n  Context: ' + aStat.note
+    : g.away + ': Advanced stats not available — use power rating ' + pwr(g.away);
+
+  // Derive matchup stat angles
+  const hPPG = hStat ? hStat.ppg : 75;
+  const aPPG = aStat ? aStat.ppg : 75;
+  const hDef = hStat ? hStat.defr : 100;
+  const aDef = aStat ? aStat.defr : 100;
+  const projScore = hStat && aStat
+    ? 'Projected pace: ' + g.home + ' ~' + ((hStat.ppg * 0.6 + (100 - aStat.defr) * 0.4 + 2).toFixed(0)) + ' | ' + g.away + ' ~' + ((aStat.ppg * 0.6 + (100 - hStat.defr) * 0.4 - 2).toFixed(0)) + ' (home court adjusted)'
+    : '';
+
+  const prompt =
+    'You are a sharp college basketball analyst. Your ONLY job is to BUILD THE CASE for the specific pick below. Do NOT second-guess it. Cite the REAL statistical data to prove WHY this pick wins.\n\n'
+    + '=== THE PICK ===\n'
+    + spreadStr + ' | Signal: ' + sigLabel.toUpperCase() + ' | Confidence: ' + c + '%\n'
+    + statusLine + '\n\n'
+    + '=== RECORDS & STANDINGS ===\n'
+    + 'HOME (' + g.home + ' — ' + g.homeFull + '): '
+    + hS.w + '-' + hS.l + ' overall | ' + hS.conf + ' #' + hS.r + ' | Conf: ' + hS.cr + '\n'
+    + 'AWAY (' + g.away + ' — ' + g.awayFull + '): '
+    + aS.w + '-' + aS.l + ' overall | ' + aS.conf + ' #' + aS.r + ' | Conf: ' + aS.cr + '\n\n'
+    + '=== REAL 2025-26 STATISTICAL DATA (source: FOX Sports / ESPN / CBS Sports) ===\n'
+    + hStatLine + '\n'
+    + aStatLine + '\n'
+    + (projScore ? projScore + '\n' : '')
+    + 'Power ratings: ' + g.home + '=' + pwr(g.home) + ', ' + g.away + '=' + pwr(g.away)
+    + ' | ' + pwrFav + ' has +' + absPwr + ' point power edge\n'
+    + 'Home court: +3.5 pts for ' + g.home + ' | Model net edge for ' + (favTeam || 'neither') + ': ' + netEdge + ' pts\n\n'
+    + '=== YOUR INSTRUCTIONS ===\n'
+    + toneInstr + '\n'
+    + 'CRITICAL: You MUST reference specific real numbers from the statistical data above (PPG, DefRtg, FG%, RPG, etc.) in EVERY section. Do not be vague — cite the numbers.\n'
+    + 'Every section must support the pick: ' + spreadStr + '\n'
+    + '3-4 sentences per section. No bullet points.\n\n'
+    + 'FORMAT — use these exact section headers:\n\n'
+    + '§OVERVIEW\n'
+    + '[Lead with the stat that most supports the pick. Contrast ' + (favTeam||g.home) + "'s key offensive/defensive numbers vs opponent. Reference their PPG differential, DefRtg, and conference standing to frame why this team wins big.]\n\n"
+    + '§SPREAD & BETTING ANGLE\n'
+    + '[Use OffRtg vs DefRtg matchup numbers to justify the ' + absSpread + '-pt spread. ' + spreadJustify + ' Compare FG% and TS% of both teams to explain efficiency edge.]\n\n'
+    + '§KEY FACTORS\n'
+    + '[Pick 2-3 statistical edges — rebounding margin, steals/turnovers, 3PT shooting — that favor ' + spreadStr + '. Cite the actual numbers. Factor in home court and travel.]\n\n'
+    + '§POSTSEASON IMPLICATIONS\n'
+    + '[March stakes — bubble status, seeding, auto bid. How do those stakes affect intensity and the spread? Reference their records and conf standing numbers.]\n\n'
+    + '§VERDICT\n'
+    + '[Start your verdict with exactly: "' + verdictStart + '" then complete with conviction. Name the single statistical X-factor (a specific number/metric) that seals this pick.]';
+
+  try {
+    const res = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+    renderAI(text, g, hS, aS, sp, c);
+  } catch(e) {
+    renderAIFallback(g, hS, aS, sp, c);
+  }
+}
+
+
+function parseSection(text, tag) {
+  const rx = new RegExp(`§${tag}\\n([\\s\\S]*?)(?=§|$)`,'i');
+  const m = text.match(rx);
+  return m ? m[1].trim() : '';
+}
+
+function renderAI(text, g, hS, aS, sp, c) {
+  const overview   = parseSection(text,'OVERVIEW');
+  const betting    = parseSection(text,'SPREAD & BETTING ANGLE');
+  const factors    = parseSection(text,'KEY FACTORS');
+  const postseason = parseSection(text,'POSTSEASON IMPLICATIONS');
+  const verdict    = parseSection(text,'VERDICT');
+  const hPct = ((hS.w/(hS.w+hS.l||1))*100).toFixed(0);
+  const aPct = ((aS.w/(aS.w+aS.l||1))*100).toFixed(0);
+  const favTeam = sp<0?g.home:sp>0?g.away:'EVEN';
+  const s = sig(sp,c);
+
+  document.getElementById('apBody').innerHTML = `<div class="ai-content fade-in">
+
+    ${overview?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">📊</span><div class="ai-sec-title">OVERVIEW</div></div>
+      <div class="ai-sec-body">${overview}</div>
+    </div>`:''}
+
+    <div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">📈</span><div class="ai-sec-title">STATISTICAL BREAKDOWN</div></div>
+      <div class="ai-sec-body">
+        <div class="mini-bar-wrap"><span class="mini-bar-lbl">${g.home}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${hPct}%;background:var(--accent)"></div></div><span class="mini-bar-num">${hS.w}-${hS.l}</span></div>
+        <div class="mini-bar-wrap"><span class="mini-bar-lbl">${g.away}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${aPct}%;background:var(--red)"></div></div><span class="mini-bar-num">${aS.w}-${aS.l}</span></div>
+        <div style="height:8px"></div>
+        ${(()=>{
+          const hs = getStat(g.home); const as_ = getStat(g.away);
+          if(hs && as_) {
+            const hFav = hs.ppg > as_.ppg; const dFav = hs.defr < as_.defr;
+            return `
+              <div style="font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:6px">◆ REAL 2025-26 SEASON DATA — FOX SPORTS / ESPN</div>
+              <div class="stat-row"><span class="stat-lbl">SCORING OFF / DEF</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.ppg}</span> / <span style="color:var(--red)">${g.away} ${as_.ppg}</span> PPG</span></div>
+              <div class="stat-row"><span class="stat-lbl">OPP PTS ALLOWED</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.opp}</span> / <span style="color:var(--red)">${g.away} ${as_.opp}</span> opp PPG</span></div>
+              <div class="stat-row"><span class="stat-lbl">OFF / DEF RATING</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.offr}/${hs.defr}</span> · <span style="color:var(--red)">${g.away} ${as_.offr}/${as_.defr}</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">FG% / TRUE SHOOT%</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.fgp}/${hs.tsp}</span> · <span style="color:var(--red)">${g.away} ${as_.fgp}/${as_.tsp}</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">REBOUNDS / ASSISTS</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.reb}r/${hs.ast}a</span> · <span style="color:var(--red)">${g.away} ${as_.reb}r/${as_.ast}a</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">STEALS / BLOCKS</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.stl}s/${hs.blk}b</span> · <span style="color:var(--red)">${g.away} ${as_.stl}s/${as_.blk}b</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">PPG DIFFERENTIAL</span><span class="stat-val"><span style="color:${(hs.ppg-hs.opp)>0?'var(--accent)':'var(--red)'}">${g.home} +${(hs.ppg-hs.opp).toFixed(1)}</span> vs <span style="color:${(as_.ppg-as_.opp)>0?'var(--accent)':'var(--red)'}">${g.away} +${(as_.ppg-as_.opp).toFixed(1)}</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">POWER RATING EDGE</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)} pts · ${g.home} ${pwr(g.home)>=pwr(g.away)?'STRONGER':'WEAKER'}</span></div>
+              <div class="stat-row"><span class="stat-lbl">HOME COURT BONUS</span><span class="stat-val pos">+3.5 pts · ${g.home}</span></div>
+            `;
+          } else {
+            return `
+              <div class="stat-row"><span class="stat-lbl">CONF RANK (HOME)</span><span class="stat-val">#${hS.r} in ${hS.conf} · ${hS.cr}</span></div>
+              <div class="stat-row"><span class="stat-lbl">CONF RANK (AWAY)</span><span class="stat-val">#${aS.r} in ${aS.conf} · ${aS.cr}</span></div>
+              <div class="stat-row"><span class="stat-lbl">POWER RATING DIFF</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)} (${g.home} ${pwr(g.home)>=pwr(g.away)?'STRONGER':'WEAKER'})</span></div>
+              <div class="stat-row"><span class="stat-lbl">HOME COURT EDGE</span><span class="stat-val pos">+3.5 pts</span></div>
+            `;
+          }
+        })()}
+      </div>
+    </div>
+
+    ${betting?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">💰</span><div class="ai-sec-title">SPREAD & BETTING ANGLE</div></div>
+      <div class="ai-sec-body">${betting}</div>
+    </div>`:''}
+
+    ${factors?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">✈️</span><div class="ai-sec-title">KEY FACTORS</div></div>
+      <div class="ai-sec-body">${factors}</div>
+    </div>`:''}
+
+    ${postseason?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">🏆</span><div class="ai-sec-title">POSTSEASON IMPLICATIONS</div></div>
+      <div class="ai-sec-body">${postseason}</div>
+    </div>`:''}
+
+    ${verdict?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">⚡</span><div class="ai-sec-title">VERDICT</div></div>
+      <div class="ai-verdict">
+        <div class="ai-verdict-lbl">THE PICK — ${(sp<0?g.home:sp>0?g.away:'EVEN')} ${sp!==0?('-'+Math.abs(sp)):''} · ${s.toUpperCase()} · ${c}% CONFIDENCE</div>
+        <div class="ai-verdict-main">${verdict}</div>
+        <div class="ai-verdict-sub">Algorithmic spread: <strong>${fmtSp(sp)}</strong> · Favored: <strong>${favTeam}</strong> · Signal: <strong>${s.toUpperCase()}</strong> · Confidence: <strong>${c}%</strong></div>
+      </div>
+    </div>`:''}
+
+  </div>`;
+}
+
+function renderAIFallback(g, hS, aS, sp, c) {
+  const hPct = ((hS.w/(hS.w+hS.l||1))*100).toFixed(0);
+  const aPct = ((aS.w/(aS.w+aS.l||1))*100).toFixed(0);
+  const favTeam = sp<0?g.home:sp>0?g.away:'EVEN';
+  document.getElementById('apBody').innerHTML = `<div class="ai-content fade-in">
+    <div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">📈</span><div class="ai-sec-title">TEAM COMPARISON</div></div>
+      <div class="ai-sec-body">
+        <div class="mini-bar-wrap"><span class="mini-bar-lbl">${g.home}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${hPct}%;background:var(--accent)"></div></div><span class="mini-bar-num">${hS.w}-${hS.l}</span></div>
+        <div class="mini-bar-wrap"><span class="mini-bar-lbl">${g.away}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${aPct}%;background:var(--red)"></div></div><span class="mini-bar-num">${aS.w}-${aS.l}</span></div>
+        <div style="height:6px"></div>
+        <div class="stat-row"><span class="stat-lbl">HOME — ${hS.conf}</span><span class="stat-val">#${hS.r} · ${hS.cr}</span></div>
+        <div class="stat-row"><span class="stat-lbl">AWAY — ${aS.conf}</span><span class="stat-val">#${aS.r} · ${aS.cr}</span></div>
+        <div class="stat-row"><span class="stat-lbl">PWR DIFF</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)}</span></div>
+      </div>
+    </div>
+    <div class="ai-sec">
+      <div class="ai-verdict">
+        <div class="ai-verdict-lbl">SPREAD PREDICTION</div>
+        <div class="ai-verdict-main">${favTeam} ${fmtSp(sp)} · ${c}% confidence</div>
+        <div class="ai-verdict-sub">AI detailed analysis unavailable — check network settings. Data based on real 2025-26 standings and power ratings.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+renderList();
+</script>
+</body>
+</html>
