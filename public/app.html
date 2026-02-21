@@ -505,7 +505,7 @@ function predSpread(h, a) {
     const [ht, at] = k.split('|');
     return ht === h && at === a;
   });
-  if (key !== undefined) return REAL_LINES[key];
+  if (key !== undefined) return -REAL_LINES[key];
   const diff = (pwr(h) - pwr(a)) * 0.28 + 3.5;
   const seed = (h.charCodeAt(0) * 3 + a.charCodeAt(0) * 7) % 11 - 5;
   return Math.round((diff + seed * 0.3) * 2) / 2;
