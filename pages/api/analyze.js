@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   store[ip].count++;
 
   // 20 analyses per IP per hour
-  if (store[ip].count > 20) {
+  if (store[ip].count > 200) {
     return res.status(429).json({ error: 'Rate limit exceeded. Try again in an hour.' });
   }
 
