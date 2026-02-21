@@ -565,9 +565,9 @@ function computePick(g, sp) {
 
   // Take the dog if: model thinks game is significantly closer than spread suggests
   // OR road favorite on a big number
- const takedog = roadFavFade ||
-    (favTeam === g.away && valueGap < -4) ||
-    (favTeam === g.home && valueGap > 4);
+  const takedog = roadFavFade ||
+    (favTeam === g.home && valueGap < -4) ||   // home favored but model says close
+    (favTeam === g.away && valueGap > 4);       // road fav but model says home is closer
 
   const pickTeam = takedog ? dogTeam : favTeam;
   const isDog = takedog;
@@ -842,9 +842,10 @@ function renderUpCard(g) {
   const cC  = c>=75?'hi':c>=60?'md':'lo';
   const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
   const spreadColor = pick.isDog ? 'dog' : 'pick';
-  const displayVal  = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
-  const isCovering = pick.pickSign === '-';
-const teamLabel = pick.pickTeam ? (pick.pickTeam + (isCovering ? ' -' + pick.displaySpread : ' +' + pick.displaySpread)) : '—';
+  const displayVal  = sp < 0 ? sp.toString() : '+' + sp;
+  const favDisplayTeam = sp < 0 ? g.home : g.away;
+  const dogDisplayTeam = sp < 0 ? g.away : g.home;
+  const teamLabel   = pick.isDog ? (dogDisplayTeam + ' +' + Math.abs(sp)) : (favDisplayTeam + ' -' + Math.abs(sp));
   const t = toCST(g.start_time);
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
@@ -884,9 +885,8 @@ function renderFinalCard(g) {
   let res = 'pushed';
   if(actual > coverLine+0.4) res='covered';
   else if(actual < coverLine-0.4) res='missed';
-  const displayVal = sp > 0 ? '+' + sp : '' + sp;
-const pickTeamDisplay = sp < 0 ? g.home : g.away;
-const teamLabel = pickTeamDisplay + ' ' + displayVal;
+  const displayVal = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
+  const teamLabel  = pick.pickTeam ? (pick.pickTeam + (pick.isDog ? ' DOG' : ' FAV')) : '—';
   const t = toCST(g.start_time);
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
