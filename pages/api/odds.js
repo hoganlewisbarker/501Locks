@@ -62,10 +62,10 @@ export default async function handler(req, res) {
       const spreadMarket = fanduel.markets?.find(m => m.key === 'spreads');
       if (!spreadMarket) continue;
 
-      const homeOutcome = spreadMarket.outcomes.find(o => o.name === game.home_team);
-      if (!homeOutcome) continue;
+      const awayOutcome = spreadMarket.outcomes.find(o => o.name === game.away_team);
+if (!awayOutcome) continue;
 
-      lines[homeAbbr + '|' + awayAbbr] = homeOutcome.point;
+lines[homeAbbr + '|' + awayAbbr] = awayOutcome.point;
     }
 
     return res.status(200).json({ lines });
