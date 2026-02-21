@@ -42,8 +42,6 @@ body::after {
   pointer-events:none;
   z-index:9998;
 }
-
-/* ── HEADER ── */
 .hdr {
   flex-shrink:0;
   display:flex;
@@ -75,8 +73,6 @@ body::after {
 .hs { display:flex; flex-direction:column; align-items:center; }
 .hs-val { font-family:'Teko',sans-serif; font-size:24px; font-weight:600; color:var(--accent); line-height:1; }
 .hs-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-top:1px; }
-
-/* ── TABS ── */
 .tab-bar {
   flex-shrink:0;
   display:flex;
@@ -103,56 +99,22 @@ body::after {
 .tab.active { color:var(--accent); border-bottom-color:var(--accent); }
 .tab.active-week { color:var(--blue); border-bottom-color:var(--blue); }
 .tab.active-final { color:var(--gold); border-bottom-color:var(--gold); }
-.tab-ct {
-  font-family:'Teko',sans-serif;
-  font-size:16px; font-weight:600; line-height:1;
-}
+.tab-ct { font-family:'Teko',sans-serif; font-size:16px; font-weight:600; line-height:1; }
 .tab:nth-child(1) .tab-ct { color:var(--accent); }
 .tab:nth-child(2) .tab-ct { color:var(--blue); }
 .tab:nth-child(3) .tab-ct { color:var(--gold); }
 .tab-sep { width:1px; background:var(--border); margin:8px 0; }
-
-.tab-hint {
-  margin-left:auto;
-  padding:0 16px;
-  font-size:8px; color:var(--muted); letter-spacing:1px;
-  display:flex; align-items:center;
-}
+.tab-hint { margin-left:auto; padding:0 16px; font-size:8px; color:var(--muted); letter-spacing:1px; display:flex; align-items:center; }
 .tab-hint span { color:var(--blue); }
-
-/* ── BODY ── */
-.body-wrap {
-  flex:1;
-  display:flex;
-  overflow:hidden;
-  min-height:0;
-}
-
-/* ── GAME LIST ── */
-.game-list {
-  flex:1;
-  overflow-y:auto;
-  padding:12px 20px;
-  scrollbar-width:thin;
-  scrollbar-color:var(--surface3) transparent;
-}
+.body-wrap { flex:1; display:flex; overflow:hidden; min-height:0; }
+.game-list { flex:1; overflow-y:auto; padding:12px 20px; scrollbar-width:thin; scrollbar-color:var(--surface3) transparent; }
 .game-list::-webkit-scrollbar { width:3px; }
 .game-list::-webkit-scrollbar-thumb { background:var(--surface3); }
-
-.day-hdr {
-  display:flex; align-items:center; gap:10px;
-  padding:14px 0 8px;
-}
+.day-hdr { display:flex; align-items:center; gap:10px; padding:14px 0 8px; }
 .day-hdr:first-child { padding-top:4px; }
-.day-title {
-  font-family:'Teko',sans-serif;
-  font-size:15px; letter-spacing:4px; color:var(--muted);
-  white-space:nowrap;
-}
+.day-title { font-family:'Teko',sans-serif; font-size:15px; letter-spacing:4px; color:var(--muted); white-space:nowrap; }
 .day-line { flex:1; height:1px; background:var(--border); }
 .day-ct { font-size:8px; color:var(--muted); letter-spacing:2px; white-space:nowrap; }
-
-/* ── GAME CARD ── */
 .gc {
   display:grid;
   grid-template-columns:54px 1fr 108px 100px 96px;
@@ -165,47 +127,29 @@ body::after {
   overflow:hidden;
   transition:all .12s;
 }
-.gc::before {
-  content:'';
-  position:absolute; left:0; top:0; bottom:0; width:3px;
-  background:var(--border);
-  transition:background .15s;
-}
+.gc::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--border); transition:background .15s; }
 .gc:hover { border-color:rgba(57,255,20,0.2); transform:translateX(2px); }
 .gc.active-card { border-color:rgba(10,245,255,0.3); background:rgba(10,245,255,0.02); }
 .gc.active-card::before { background:var(--blue); }
 .gc.hot::before { background:var(--accent); }
 .gc.value::before { background:var(--gold); }
 .gc.risky::before { background:var(--red); }
-
-.gc-time {
-  padding:10px 8px 10px 13px;
-  font-size:9px; color:var(--muted); letter-spacing:.5px; line-height:1.6;
-}
+.gc-time { padding:10px 8px 10px 13px; font-size:9px; color:var(--muted); letter-spacing:.5px; line-height:1.6; }
 .gc-time strong { display:block; font-size:11px; color:var(--text); font-weight:500; }
-
 .gc-teams { padding:9px 10px; min-width:0; }
-.gc-team {
-  display:flex; align-items:center; gap:6px;
-  padding:2px 0; line-height:1;
-}
-.gc-abv {
-  font-family:'Teko',sans-serif;
-  font-size:19px; font-weight:600; letter-spacing:1px;
-  min-width:50px;
-}
+.gc-team { display:flex; align-items:center; gap:6px; padding:2px 0; line-height:1; }
+.gc-abv { font-family:'Teko',sans-serif; font-size:19px; font-weight:600; letter-spacing:1px; min-width:50px; }
 .gc-fullname { font-size:8px; color:var(--muted); letter-spacing:.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:120px; }
 .gc-score { font-family:'Teko',sans-serif; font-size:20px; color:var(--gold); margin-left:auto; padding-left:4px; }
 .winner .gc-abv { color:var(--accent); }
 .loser .gc-abv { color:var(--muted); }
-
 .gc-spread { padding:9px 8px; border-left:1px solid var(--border); text-align:center; }
 .gc-spread-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:2px; }
 .gc-spread-val { font-family:'Teko',sans-serif; font-size:26px; font-weight:600; letter-spacing:1px; line-height:1; }
 .gc-spread-val.fav { color:var(--red); }
 .gc-spread-val.pick { color:var(--blue); }
+.gc-spread-val.dog { color:var(--gold); }
 .gc-spread-team { font-size:7px; color:var(--muted); letter-spacing:1px; margin-top:1px; }
-
 .gc-conf { padding:9px 8px; border-left:1px solid var(--border); }
 .gc-conf-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:3px; }
 .gc-conf-val { font-family:'Teko',sans-serif; font-size:24px; font-weight:600; line-height:1; }
@@ -214,31 +158,23 @@ body::after {
 .gc-conf-val.lo { color:var(--red); }
 .gc-bar-wrap { height:3px; background:rgba(255,255,255,0.05); margin-top:3px; }
 .gc-bar { height:100%; transition:width .5s ease; }
-
 .gc-signal { padding:9px 8px; border-left:1px solid var(--border); display:flex; flex-direction:column; gap:4px; align-items:flex-start; justify-content:center; }
-.tag {
-  font-size:7px; letter-spacing:2px; text-transform:uppercase;
-  padding:2px 5px; border:1px solid; white-space:nowrap;
-}
+.tag { font-size:7px; letter-spacing:2px; text-transform:uppercase; padding:2px 5px; border:1px solid; white-space:nowrap; }
 .tag.cover { border-color:var(--accent); color:var(--accent); background:var(--accent-dim); }
 .tag.fade  { border-color:var(--red);   color:var(--red);   background:var(--red-dim);   }
 .tag.push  { border-color:var(--gold);  color:var(--gold);  background:var(--gold-dim);  }
 .tag.toss  { border-color:var(--muted); color:var(--muted); }
 .tag.await { border-color:var(--blue);  color:var(--blue);  background:var(--blue-dim);  }
+.tag.dog-play { border-color:var(--purple); color:var(--purple); background:var(--purple-dim); }
 .result-tag { font-size:8px; font-weight:500; }
 .result-tag.covered { color:var(--accent); }
 .result-tag.missed  { color:var(--red); }
 .result-tag.pushed  { color:var(--gold); }
-
-.gc-badge {
-  position:absolute; top:5px; right:7px;
-  font-size:7px; letter-spacing:2px; text-transform:uppercase;
-}
+.gc-badge { position:absolute; top:5px; right:7px; font-size:7px; letter-spacing:2px; text-transform:uppercase; }
 .gc-badge.final    { color:var(--muted); }
 .gc-badge.upcoming { color:var(--gold); }
 .gc-badge.hot-pick { color:var(--red); animation:blink 1.4s infinite; }
-
-/* ── ANALYSIS PANEL ── */
+.gc-badge.dog-pick { color:var(--purple); }
 .ap {
   width:var(--panel-w);
   flex-shrink:0;
@@ -250,28 +186,11 @@ body::after {
   overflow:hidden;
 }
 .ap.collapsed { width:0; border-left:none; }
-
-.ap-hdr {
-  flex-shrink:0;
-  padding:14px 18px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:10px;
-  background: linear-gradient(90deg, rgba(10,245,255,0.04), transparent);
-}
+.ap-hdr { flex-shrink:0; padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; background: linear-gradient(90deg, rgba(10,245,255,0.04), transparent); }
 .ap-title { font-family:'Teko',sans-serif; font-size:18px; letter-spacing:4px; color:var(--blue); flex:1; }
-.ap-close {
-  background:transparent; border:1px solid var(--border);
-  color:var(--muted); font-family:'IBM Plex Mono',monospace;
-  font-size:10px; padding:3px 9px; cursor:pointer; transition:all .15s;
-}
+.ap-close { background:transparent; border:1px solid var(--border); color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 9px; cursor:pointer; transition:all .15s; }
 .ap-close:hover { border-color:var(--red); color:var(--red); }
-
-.ap-matchup {
-  flex-shrink:0;
-  padding:14px 18px;
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center;
-}
+.ap-matchup { flex-shrink:0; padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; }
 .apt { flex:1; display:flex; flex-direction:column; gap:3px; }
 .apt.away { align-items:flex-end; }
 .apt-abv { font-family:'Teko',sans-serif; font-size:40px; font-weight:700; letter-spacing:2px; line-height:1; }
@@ -280,53 +199,24 @@ body::after {
 .apt-name { font-size:8px; color:var(--muted); letter-spacing:1.5px; }
 .apt-rec  { font-size:10px; color:var(--text); letter-spacing:1px; }
 .ap-vs { font-family:'Teko',sans-serif; font-size:20px; color:var(--muted); letter-spacing:2px; padding:0 10px; }
-
-.ap-metrics {
-  flex-shrink:0;
-  display:grid; grid-template-columns:1fr 1fr 1fr;
-  border-bottom:1px solid var(--border);
-}
+.ap-metrics { flex-shrink:0; display:grid; grid-template-columns:1fr 1fr 1fr; border-bottom:1px solid var(--border); }
 .apm { padding:9px 12px; border-right:1px solid var(--border); }
 .apm:last-child { border-right:none; }
 .apm-lbl { font-size:7px; color:var(--muted); letter-spacing:2px; margin-bottom:3px; }
 .apm-val { font-family:'Teko',sans-serif; font-size:22px; font-weight:600; line-height:1; }
 .apm-sub { font-size:7px; color:var(--muted); margin-top:2px; }
-
-/* ── AI BODY ── */
-.ap-body {
-  flex:1; overflow-y:auto;
-  padding:16px 18px;
-  scrollbar-width:thin;
-  scrollbar-color:var(--surface3) transparent;
-}
+.ap-body { flex:1; overflow-y:auto; padding:16px 18px; scrollbar-width:thin; scrollbar-color:var(--surface3) transparent; }
 .ap-body::-webkit-scrollbar { width:3px; }
 .ap-body::-webkit-scrollbar-thumb { background:var(--surface3); }
-
-.ai-loading {
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  height:100%; gap:14px; color:var(--muted);
-}
-.ai-spinner {
-  width:32px; height:32px;
-  border:2px solid var(--border);
-  border-top-color:var(--blue);
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
+.ai-loading { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:14px; color:var(--muted); }
+.ai-spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--blue); border-radius:50%; animation:spin .8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .ai-loading-text { font-size:9px; letter-spacing:3px; color:var(--blue); }
-
-.click-hint {
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  height:100%; gap:10px; padding:28px;
-}
+.click-hint { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:10px; padding:28px; }
 .click-hint-icon { font-size:44px; opacity:.12; }
 .click-hint-text { font-size:10px; color:var(--muted); letter-spacing:2px; text-align:center; line-height:1.9; }
 .click-hint-arrow { font-size:8px; color:var(--blue); letter-spacing:3px; animation:float 2s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
-
 .ai-content { display:flex; flex-direction:column; }
 .ai-sec { border-bottom:1px solid var(--border); padding:12px 0; }
 .ai-sec:last-child { border-bottom:none; }
@@ -335,17 +225,10 @@ body::after {
 .ai-sec-title { font-family:'Teko',sans-serif; font-size:15px; letter-spacing:3px; color:var(--gold); }
 .ai-sec-body { font-size:10px; color:var(--text); line-height:1.8; letter-spacing:.3px; }
 .ai-sec-body strong { color:var(--blue); font-weight:500; }
-
-.ai-verdict {
-  background: linear-gradient(135deg, rgba(10,245,255,0.05), rgba(57,255,20,0.03));
-  border:1px solid rgba(10,245,255,0.18);
-  padding:12px;
-  margin-top:4px;
-}
+.ai-verdict { background: linear-gradient(135deg, rgba(10,245,255,0.05), rgba(57,255,20,0.03)); border:1px solid rgba(10,245,255,0.18); padding:12px; margin-top:4px; }
 .ai-verdict-lbl { font-size:7px; color:var(--blue); letter-spacing:3px; margin-bottom:5px; }
 .ai-verdict-main { font-family:'Teko',sans-serif; font-size:20px; letter-spacing:2px; color:var(--text); line-height:1.3; }
 .ai-verdict-sub { font-size:9px; color:var(--muted); margin-top:5px; line-height:1.7; }
-
 .mini-bar-wrap { display:flex; align-items:center; gap:7px; margin:2px 0 5px; }
 .mini-bar-lbl { font-size:8px; color:var(--muted); min-width:32px; letter-spacing:.5px; }
 .mini-bar-track { flex:1; height:4px; background:rgba(255,255,255,0.05); }
@@ -357,33 +240,17 @@ body::after {
 .stat-val { font-size:8px; color:var(--text); letter-spacing:.5px; text-align:right; }
 .stat-val.pos { color:var(--accent); }
 .stat-val.neg { color:var(--red); }
-
-/* ── FOOTER ── */
-.footer {
-  flex-shrink:0;
-  padding:5px 24px;
-  font-size:7px; color:var(--muted); letter-spacing:1px;
-  border-top:1px solid var(--border);
-  background:var(--surface);
-}
+.footer { flex-shrink:0; padding:5px 24px; font-size:7px; color:var(--muted); letter-spacing:1px; border-top:1px solid var(--border); background:var(--surface); }
 .footer span { color:var(--gold); }
-
 .fade-in { animation:fi .25s ease forwards; opacity:0; }
 @keyframes fi { to { opacity:1; } }
-
-/* ── EMPTY STATE ── */
-.empty-state {
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  padding:60px 20px; gap:12px; color:var(--muted);
-}
+.empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; gap:12px; color:var(--muted); }
 .empty-state-icon { font-size:48px; opacity:.1; }
 .empty-state-text { font-size:10px; color:var(--muted); letter-spacing:2px; text-align:center; line-height:1.8; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="hdr">
   <div class="logo">501<em>LOCKS</em></div>
   <div class="hdr-mid">
@@ -397,7 +264,6 @@ body::after {
   </div>
 </header>
 
-<!-- TABS -->
 <div class="tab-bar">
   <button class="tab active" id="tab-today" onclick="setTab('today')">
     <span>UPCOMING TODAY</span>
@@ -416,10 +282,8 @@ body::after {
   <div class="tab-hint"><span>↑</span>&nbsp;CLICK ANY GAME FOR AI ANALYSIS</div>
 </div>
 
-<!-- BODY -->
 <div class="body-wrap">
   <div class="game-list" id="gameList"></div>
-
   <div class="ap collapsed" id="ap">
     <div class="ap-hdr">
       <div class="ap-title">DEEP ANALYSIS</div>
@@ -437,7 +301,6 @@ body::after {
   </div>
 </div>
 
-<!-- FOOTER -->
 <div class="footer">
   <span>⚠ ENTERTAINMENT ONLY</span> · Algorithmic spread predictions. Not official Vegas lines. AI analysis uses real 2025-26 standings data. Please gamble responsibly.
 </div>
@@ -566,7 +429,6 @@ const STD = {
 };
 function getS(t){ return STD[t]||{w:0,l:0,conf:"—",cr:"—",r:"?"}; }
 
-// Power ratings
 const PWR = {
   "DUKE":92,"UK":89,"AUB":91,"TENN":90,"ALA":87,"LSU":82,"KU":91,"GONZ":88,
   "BYU":82,"ISU":86,"CIN":80,"SJU":85,"CREI":84,"PUR":83,"IND":79,"BAY":83,
@@ -574,26 +436,20 @@ const PWR = {
   "SLU":86,"ARIZ":92,"HOU":90,"FLA":84,"ARK":83,"TXAM":82,"MIA":84,"UVA":87,
   "UNC":83,"CLEM":84,"LOU":82,"NCST":82,"SMC":86,"SCU":82,"USU":83,"UNM":81,
   "SDSU":80,"M-OH":88,"AKR":80,"KENT":79,"TLSA":73,"USF":72,"WICH":73,"TULN":74,
-  "UNT":70,"BAY":83,"ASU":76,"TCU":77,"WVU":78,"OKST":77,"TTU":84,"KSU":72,
+  "UNT":70,"ASU":76,"TCU":77,"WVU":78,"OKST":77,"TTU":84,"KSU":72,
   "UTAH":68,"COLO":75,"PSU":68,"NW":66,"RUTG":70,"MINN":68,"WASH":72,"ORE":66,
   "MD":67,"OSU":78,"WIS":80,"USC":79,"IOWA":78,"MSST":72,"OKLA":71,"MISS":68,
   "SCAR":68,"UGA":80,"TEX":82,"MIZZ":80,"NEB":82,"MSU":83,"GT":65,"WAKE":72,
   "SYR":72,"FSU":70,"STAN":75,"CAL":77,"SMU":79,"VT":76,"BC":65,"MARQ":67,
   "HALL":78,"XAV":72,"GTWN":72,"PROV":69,"DEP":71,"BUT":72,"NEV":74,"CSU":73,
-  "BSU":74,"WYO":69,"UNLV":70,"FRES":68,"GC":71,"PAC":65,"SMC":86,"SCU":82,
-  "ORST":70,"WSU":67,"PORT":65,"LMU":66,"PEPP":60,"DAY":78,"SLU":86,"VCU":80,
+  "BSU":74,"WYO":69,"UNLV":70,"FRES":68,"GC":71,"PAC":65,
+  "ORST":70,"WSU":67,"PORT":65,"LMU":66,"PEPP":60,"DAY":78,"VCU":80,
   "DUQ":73,"GAST":66,"GASO":65,"USA":70,"TROY":69,"MRSH":72,"BEL":79,"MURR":74,
-  "BRAD":73,"TLSA":73,"AKR":80,"KENT":79,"BGSU":70,"BUFF":68,"BALL":58,
-  "M-OH":88,"MISS":68,"SCAR":68,"UNC":83,"CLEM":84,"LOU":82,"SJU":85,
-  "VAN":84,"FLA":84,"UK":89,"AUB":91,"MICH":94,"DUKE":92,"GONZ":88,
-  "YALE":72,"NEB":82,"PSU":68,"MINN":68,"ILL":80,"UCLA":81,"ISU":86,
-  "KU":91,"HOU":90,"ARIZ":92,"WIS":80,"IOWA":78,"LSU":82,"ALA":87,
-  "TENN":90,"ARK":83,"TEX":82,"UGA":80,"TXAM":82,"MIZZ":80,
+  "BRAD":73,"BGSU":70,"BUFF":68,"BALL":58,
+  "YALE":72,
 };
 function pwr(t){ return PWR[t]||65; }
 
-// ── REAL TEAM STATS (2025-26 season, sourced from FOX Sports / ESPN / CBS Sports) ──
-// ppg=points/g, opp=opp pts/g, reb=reb/g, ast=ast/g, fgp=FG%, tsp=TS%, offr=off rating, defr=def rating
 const TEAM_STATS = {
   "MICH": {ppg:94.6,opp:68.5,reb:40.5,ast:20.1,fgp:52.3,tsp:63.5,offr:126.2,defr:91.4,stl:6.9,blk:6.2,note:"#2 nationally in scoring, leading scorer Lendeborg 14.7 PPG, +26.1 PPG differential, Cadeau 5.2 APG"},
   "DUKE": {ppg:84.1,opp:63.6,reb:37.2,ast:17.1,fgp:49.9,tsp:61.1,offr:124.1,defr:93.8,stl:8.4,blk:3.7,note:"Cameron Boozer 23.3 PPG/9.9 RPG, +20.5 PPG differential, 8.4 SPG elite D, #1 ACC at 13-1 conf"},
@@ -623,13 +479,12 @@ const TEAM_STATS = {
   "VILL": {ppg:82.7,opp:70.4,reb:36.8,ast:17.9,fgp:48.4,tsp:59.2,offr:119.6,defr:97.3,stl:6.8,blk:3.4,note:"21-5, Big East #3, 12-3 conf, balanced attack, 97.3 DefRtg solid, tournament lock"},
   "SLU":  {ppg:83.9,opp:66.4,reb:38.2,ast:18.1,fgp:49.6,tsp:60.8,offr:122.4,defr:91.8,stl:7.2,blk:3.9,note:"24-2, A-10 #1, 91.8 DefRtg top-10 nationally, elite efficiency 60.8 TS%"},
   "VCU":  {ppg:79.4,opp:68.1,reb:37.8,ast:17.3,fgp:47.1,tsp:58.6,offr:116.2,defr:93.7,stl:8.9,blk:3.2,note:"21-6, A-10 #2, Havoc defense 8.9 SPG elite, 93.7 DefRtg, known for press/steal game"},
-  "DALL": {ppg:76.2,opp:73.4,reb:35.6,ast:15.1,fgp:44.8,tsp:54.9,offr:110.3,defr:106.8,stl:6.1,blk:2.9,note:"Placeholder for teams without specific data"},
 };
 function getStat(t){ return TEAM_STATS[t]||null; }
 
-// ── REAL VEGAS LINES (FanDuel/DraftKings/BetMGM consensus, Feb 20-21 2026) ──
-// Negative = home team favored by that amount. Positive = away team favored.
-// Source: OddsShark, TheSpread.com, DraftKings/FanDuel live boards
+// ═══════════════════════════════════════════════════════
+//  LIVE ODDS
+// ═══════════════════════════════════════════════════════
 let REAL_LINES = {};
 
 async function loadOdds() {
@@ -642,6 +497,9 @@ async function loadOdds() {
   }
 }
 
+// ═══════════════════════════════════════════════════════
+//  SPREAD PREDICTION
+// ═══════════════════════════════════════════════════════
 function predSpread(h, a) {
   const key = Object.keys(REAL_LINES).find(k => {
     const [ht, at] = k.split('|');
@@ -651,59 +509,185 @@ function predSpread(h, a) {
   const diff = (pwr(h) - pwr(a)) * 0.28 + 3.5;
   const seed = (h.charCodeAt(0) * 3 + a.charCodeAt(0) * 7) % 11 - 5;
   return Math.round((diff + seed * 0.3) * 2) / 2;
-};
-
-
-function confPct(sp, h, a){
-  const spreadSize = Math.abs(sp);
-  const hR = getS(h); const aR = getS(a);
-  const hWinPct = hR.w / ((hR.w + hR.l) || 1);
-  const aWinPct = aR.w / ((aR.w + aR.l) || 1);
-  const winPctGap = Math.abs(hWinPct - aWinPct) * 100;
-  const pwrGap = Math.abs(pwr(h) - pwr(a));
-  const hConfW = parseInt(hR.cr.split('-')[0]) || 0;
-  const hConfL = parseInt(hR.cr.split('-')[1]) || 1;
-  const aConfW = parseInt(aR.cr.split('-')[0]) || 0;
-  const aConfL = parseInt(aR.cr.split('-')[1]) || 1;
-  const hConfPct = hConfW / ((hConfW + hConfL) || 1);
-  const aConfPct = aConfW / ((aConfW + aConfL) || 1);
-  const confGap = Math.abs(hConfPct - aConfPct) * 100;
-
-  // Weighted score: spread (30%) + power gap (30%) + win% gap (20%) + conf% gap (20%)
-  const score = (spreadSize * 1.8) + (pwrGap * 1.5) + (winPctGap * 1.0) + (confGap * 0.8);
-
-  // Normalize to 50-94 range
-  const conf = Math.min(94, Math.max(50, Math.round(50 + score * 0.4)));
-  return conf;
 }
-function sig(sp,c){ if(Math.abs(sp)<1.5)return'toss'; if(c>=68)return'cover'; if(c<=54)return'fade'; return'push'; }
-function cardCls(sp,c){ if(c>=80)return'hot'; if(Math.abs(sp)>=5&&c>=68)return'value'; if(Math.abs(sp)<2)return'risky'; return''; }
-function fmtSp(v){ return v>0?`+${v}`:`${v}`; }
+
+// ═══════════════════════════════════════════════════════
+//  SMART PICK ENGINE
+//  Returns { pickTeam, isDog, displaySpread, pickSign }
+// ═══════════════════════════════════════════════════════
+function computePick(g, sp) {
+  const absSpread = Math.abs(sp);
+  const favTeam = sp < 0 ? g.home : sp > 0 ? g.away : null;
+  const dogTeam  = sp < 0 ? g.away : sp > 0 ? g.home : null;
+
+  if (!favTeam) return { pickTeam: null, isDog: false, displaySpread: 0, pickSign: '', favTeam: null, dogTeam: null, absSpread: 0 };
+
+  const hR = getS(g.home), aR = getS(g.away);
+  const hStat = getStat(g.home), aStat = getStat(g.away);
+
+  // Win percentage
+  const hWP = hR.w / ((hR.w + hR.l) || 1);
+  const aWP = aR.w / ((aR.w + aR.l) || 1);
+
+  // Conference record percentage
+  const hCW = parseInt(hR.cr.split('-')[0])||0, hCL = parseInt(hR.cr.split('-')[1])||1;
+  const aCW = parseInt(aR.cr.split('-')[0])||0, aCL = parseInt(aR.cr.split('-')[1])||1;
+  const hCP = hCW/((hCW+hCL)||1), aCP = aCW/((aCW+aCL)||1);
+
+  // Net rating (if available)
+  const hNetRtg = hStat ? (hStat.offr - hStat.defr) : (pwr(g.home) - 80);
+  const aNetRtg = aStat ? (aStat.offr - aStat.defr) : (pwr(g.away) - 80);
+
+  // Postseason pressure (bubble/seeding teams play harder)
+  const hPost = (hR.w >= 18 || hR.r <= 4) ? 2.0 : 0;
+  const aPost = (aR.w >= 18 || aR.r <= 4) ? 2.0 : 0;
+
+  // Home court value (real home court = 3-4 pts historically)
+  const homeCourt = 3.5;
+
+  // Composite team strength score (higher = stronger)
+  const hScore = (pwr(g.home) * 0.40) + (hWP * 25 * 0.20) + (hCP * 25 * 0.18) + (hNetRtg * 0.15) + hPost + homeCourt;
+  const aScore = (pwr(g.away) * 0.40) + (aWP * 25 * 0.20) + (aCP * 25 * 0.18) + (aNetRtg * 0.15) + aPost;
+
+  const scoreDiff = hScore - aScore; // positive = home stronger
+
+  // Expected margin based on composite scores
+  const expectedMargin = scoreDiff * 0.7;
+
+  // Vegas line
+  const vegasMargin = -sp; // negative sp = home favored, so vegasMargin > 0 means home favored
+
+  // Value gap: positive = home is undervalued, negative = away is undervalued
+  const valueGap = expectedMargin - vegasMargin;
+
+  // Fade rule: if spread > 14 and road favorite, historically bad ATS
+  const roadFavFade = favTeam === g.away && absSpread >= 14;
+
+  // Take the dog if: model thinks game is significantly closer than spread suggests
+  // OR road favorite on a big number
+  const takedog = roadFavFade ||
+    (favTeam === g.home && valueGap < -4) ||   // home favored but model says close
+    (favTeam === g.away && valueGap > 4);       // road fav but model says home is closer
+
+  const pickTeam = takedog ? dogTeam : favTeam;
+  const isDog = takedog;
+  const pickSign = (pickTeam === g.home ? (sp < 0 ? '-' : '+') : (sp > 0 ? '-' : '+'));
+
+  // Correct sign logic: favored team gets -, dog gets +
+  const isFavPick = pickTeam === favTeam;
+  const finalSign = isFavPick ? '-' : '+';
+
+  return { pickTeam, isDog, displaySpread: absSpread, pickSign: finalSign, favTeam, dogTeam, absSpread };
+}
+
+// ═══════════════════════════════════════════════════════
+//  CONFIDENCE — MULTI-FACTOR ALGORITHM
+// ═══════════════════════════════════════════════════════
+function confPct(sp, h, a) {
+  if (!h || !a) {
+    const x = Math.abs(sp);
+    return Math.min(94, Math.max(50, Math.round(50 + x * 2.5)));
+  }
+
+  const hR = getS(h), aR = getS(a);
+  const hStat = getStat(h), aStat = getStat(a);
+  const spreadSize = Math.abs(sp);
+
+  // Win % gap
+  const hWP = hR.w / ((hR.w + hR.l) || 1);
+  const aWP = aR.w / ((aR.w + aR.l) || 1);
+  const wpGap = Math.abs(hWP - aWP) * 100;
+
+  // Power rating gap
+  const pwrGap = Math.abs(pwr(h) - pwr(a));
+
+  // Conference record gap
+  const hCW = parseInt(hR.cr.split('-')[0])||0, hCL = parseInt(hR.cr.split('-')[1])||1;
+  const aCW = parseInt(aR.cr.split('-')[0])||0, aCL = parseInt(aR.cr.split('-')[1])||1;
+  const hCP = hCW/((hCW+hCL)||1), aCP = aCW/((aCW+aCL)||1);
+  const confGap = Math.abs(hCP - aCP) * 100;
+
+  // Advanced stats gap
+  let netRtgGap = 0, effGap = 0, rebGap = 0, stlGap = 0;
+  if (hStat && aStat) {
+    netRtgGap = Math.abs((hStat.offr - hStat.defr) - (aStat.offr - aStat.defr));
+    effGap = Math.abs(hStat.tsp - aStat.tsp);
+    rebGap = Math.abs(hStat.reb - aStat.reb);
+    stlGap = Math.abs(hStat.stl - aStat.stl);
+  }
+
+  // Postseason pressure multiplier
+  const hPost = (hR.w >= 18 || hR.r <= 3) ? 1.12 : 1.0;
+  const aPost = (aR.w >= 18 || aR.r <= 3) ? 1.12 : 1.0;
+  const stakesBoost = Math.max(hPost, aPost);
+
+  // Penalize close spreads — coin flip territory
+  const spreadMod = spreadSize < 2 ? 0.80 : spreadSize < 4 ? 0.88 : spreadSize < 7 ? 0.94 : 1.0;
+
+  // Real line bonus — if we have a Vegas line, slightly more confident
+  const hasRealLine = Object.keys(REAL_LINES).some(k => {
+    const [ht, at] = k.split('|'); return ht === h && at === a;
+  });
+  const realLineBonus = hasRealLine ? 3 : 0;
+
+  // Weighted composite
+  const raw = (
+    (spreadSize * 1.5) +
+    (pwrGap    * 1.8) +
+    (wpGap     * 1.0) +
+    (confGap   * 0.9) +
+    (netRtgGap * 0.9) +
+    (effGap    * 0.7) +
+    (rebGap    * 0.3) +
+    (stlGap    * 0.4)
+  ) * stakesBoost * spreadMod;
+
+  return Math.min(94, Math.max(50, Math.round(50 + raw * 0.32 + realLineBonus)));
+}
+
+function sig(sp, c, isDog) {
+  if (isDog) return 'dog-play';
+  if (Math.abs(sp) < 1.5) return 'toss';
+  if (c >= 68) return 'cover';
+  if (c <= 54) return 'fade';
+  return 'push';
+}
+
+function cardCls(sp, c, isDog) {
+  if (isDog) return 'value';
+  if (c >= 80) return 'hot';
+  if (Math.abs(sp) >= 5 && c >= 68) return 'value';
+  if (Math.abs(sp) < 2) return 'risky';
+  return '';
+}
+
+function fmtSp(v){ return v > 0 ? `+${v}` : `${v}`; }
+
 function toCST(u){
-  const d=new Date(u);
-  const c=new Date(d.getTime()-6*3600000);
-  let h=c.getUTCHours(),m=c.getUTCMinutes();
-  const ap=h>=12?'PM':'AM'; h=h%12||12;
+  const d = new Date(u);
+  const c = new Date(d.getTime() - 6 * 3600000);
+  let h = c.getUTCHours(), m = c.getUTCMinutes();
+  const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
   return `${h}:${m.toString().padStart(2,'0')} ${ap}`;
 }
+
 function utcDay(u){
-  // Return the UTC date string YYYY-MM-DD adjusted to CST day
-  const d=new Date(u);
-  const c=new Date(d.getTime()-6*3600000);
+  const d = new Date(u);
+  const c = new Date(d.getTime() - 6 * 3600000);
   return c.toISOString().slice(0,10);
 }
+
 function fmtDayLabel(d){
-  const days=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const dt=new Date(d+'T12:00:00Z');
+  const days   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const dt = new Date(d + 'T12:00:00Z');
   return `${days[dt.getUTCDay()]} ${months[dt.getUTCMonth()]} ${dt.getUTCDate()}`;
 }
 
 // ═══════════════════════════════════════════════════════
-//  RAW GAME DATA (from API, injected)
+//  RAW GAME DATA
 // ═══════════════════════════════════════════════════════
 const RAW_GAMES = [
-  // ── FINAL GAMES (Feb 20) ──
   {id:"g1",status:"closed",start_time:"2026-02-20T01:00:00+00:00",home:"UVU",away:"CBU",homeFull:"Utah Valley Wolverines",awayFull:"California Baptist",homeScore:65,awayScore:46},
   {id:"g2",status:"closed",start_time:"2026-02-20T01:00:00+00:00",home:"GAST",away:"GASO",homeFull:"Georgia State Panthers",awayFull:"Georgia Southern",homeScore:66,awayScore:64},
   {id:"g3",status:"closed",start_time:"2026-02-20T01:30:00+00:00",home:"FAMU",away:"AAMU",homeFull:"Florida A&M Rattlers",awayFull:"Alabama A&M",homeScore:61,awayScore:63},
@@ -724,7 +708,6 @@ const RAW_GAMES = [
   {id:"g18",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"UCRV",away:"CSB",homeFull:"UC Riverside",awayFull:"Cal St. Bakersfield",homeScore:93,awayScore:65},
   {id:"g19",status:"closed",start_time:"2026-02-20T03:00:00+00:00",home:"LBSU",away:"UCI",homeFull:"Long Beach State",awayFull:"UC Irvine",homeScore:58,awayScore:69},
   {id:"g20",status:"closed",start_time:"2026-02-20T05:00:00+00:00",home:"HAW",away:"CP",homeFull:"Hawai'i Rainbow Warriors",awayFull:"Cal Poly",homeScore:75,awayScore:86},
-  // ── TODAY UPCOMING (Feb 20 CST — games still to play) ──
   {id:"u1",status:"scheduled",start_time:"2026-02-20T23:30:00+00:00",home:"BALL",away:"AKR",homeFull:"Ball State Cardinals",awayFull:"Akron Zips"},
   {id:"u2",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"IONA",away:"SPC",homeFull:"Iona Gaels",awayFull:"Saint Peter's Peacocks"},
   {id:"u3",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"FAIR",away:"SHU",homeFull:"Fairfield Stags",awayFull:"Sacred Heart"},
@@ -732,7 +715,6 @@ const RAW_GAMES = [
   {id:"u5",status:"scheduled",start_time:"2026-02-21T00:00:00+00:00",home:"BRWN",away:"PRIN",homeFull:"Brown Bears",awayFull:"Princeton Tigers"},
   {id:"u6",status:"scheduled",start_time:"2026-02-21T01:00:00+00:00",home:"PUR",away:"IND",homeFull:"Purdue Boilermakers",awayFull:"Indiana Hoosiers"},
   {id:"u7",status:"scheduled",start_time:"2026-02-21T01:30:00+00:00",home:"M-OH",away:"BGSU",homeFull:"Miami (OH) RedHawks",awayFull:"Bowling Green Falcons"},
-  // ── THIS WEEK (Feb 21+) ──
   {id:"w1",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"VT",away:"WAKE",homeFull:"Virginia Tech Hokies",awayFull:"Wake Forest"},
   {id:"w2",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"CLEM",away:"FSU",homeFull:"Clemson Tigers",awayFull:"Florida State"},
   {id:"w3",status:"scheduled",start_time:"2026-02-21T17:00:00+00:00",home:"MINN",away:"RUTG",homeFull:"Minnesota Golden Gophers",awayFull:"Rutgers Scarlet Knights"},
@@ -790,58 +772,45 @@ const RAW_GAMES = [
   {id:"w55",status:"scheduled",start_time:"2026-02-28T01:00:00+00:00",home:"ILL",away:"MICH",homeFull:"Illinois Fighting Illini",awayFull:"Michigan Wolverines"},
 ];
 
-// ═══════════════════════════════════════════════════════
-//  CATEGORIZE
-// ═══════════════════════════════════════════════════════
-// Today in CST = 2026-02-20
 const TODAY_CST = "2026-02-20";
+const finalGames = RAW_GAMES.filter(g => g.status === "closed");
+const todayGames = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) === TODAY_CST);
+const weekGames  = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) > TODAY_CST);
 
-const finalGames   = RAW_GAMES.filter(g => g.status === "closed");
-const todayGames   = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) === TODAY_CST);
-const weekGames    = RAW_GAMES.filter(g => g.status === "scheduled" && utcDay(g.start_time) > TODAY_CST);
-
-// ═══════════════════════════════════════════════════════
-//  CURRENT TAB
-// ═══════════════════════════════════════════════════════
 let currentTab = 'today';
 let activeCard = null;
 
-// Update header counts
-document.getElementById('stat-today').textContent  = todayGames.length;
-document.getElementById('stat-week').textContent   = weekGames.length;
-document.getElementById('stat-final').textContent  = finalGames.length;
-document.getElementById('tc-today').textContent    = todayGames.length;
-document.getElementById('tc-week').textContent     = weekGames.length;
-document.getElementById('tc-final').textContent    = finalGames.length;
+document.getElementById('stat-today').textContent = todayGames.length;
+document.getElementById('stat-week').textContent  = weekGames.length;
+document.getElementById('stat-final').textContent = finalGames.length;
+document.getElementById('tc-today').textContent   = todayGames.length;
+document.getElementById('tc-week').textContent    = weekGames.length;
+document.getElementById('tc-final').textContent   = finalGames.length;
 
 function setTab(t) {
   currentTab = t;
   ['today','week','final'].forEach(x => {
-    const btn = document.getElementById('tab-'+x);
-    btn.classList.remove('active','active-week','active-final');
+    document.getElementById('tab-'+x).classList.remove('active','active-week','active-final');
   });
-  if(t==='today')  document.getElementById('tab-today').classList.add('active');
-  if(t==='week')   document.getElementById('tab-week').classList.add('active-week');
-  if(t==='final')  document.getElementById('tab-final').classList.add('active-final');
-  loadOdds().then(() => renderList());
+  if(t==='today') document.getElementById('tab-today').classList.add('active');
+  if(t==='week')  document.getElementById('tab-week').classList.add('active-week');
+  if(t==='final') document.getElementById('tab-final').classList.add('active-final');
+  renderList();
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER LIST
-// ═══════════════════════════════════════════════════════
 function renderList() {
   const gl = document.getElementById('gameList');
-  if(currentTab === 'today')  gl.innerHTML = renderUpcomingSection(todayGames, true);
-  if(currentTab === 'week')   gl.innerHTML = renderWeekSections(weekGames);
-  if(currentTab === 'final')  gl.innerHTML = renderFinalSection(finalGames);
+  if(currentTab === 'today') gl.innerHTML = renderUpcomingSection(todayGames, true);
+  if(currentTab === 'week')  gl.innerHTML = renderWeekSections(weekGames);
+  if(currentTab === 'final') gl.innerHTML = renderFinalSection(finalGames);
 }
 
 function renderUpcomingSection(games, isToday) {
-  if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">NO ${isToday?'UPCOMING':'UPCOMING'} GAMES<br>CHECK BACK LATER</div></div>`;
-  const sorted = [...games].sort((a,b)=>{
-    const spA = Math.abs(predSpread(a.home,a.away));
-    const spB = Math.abs(predSpread(b.home,b.away));
-    return spB - spA;
+  if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">NO UPCOMING GAMES<br>CHECK BACK LATER</div></div>`;
+  const sorted = [...games].sort((a,b) => {
+    const cA = confPct(predSpread(a.home,a.away), a.home, a.away);
+    const cB = confPct(predSpread(b.home,b.away), b.home, b.away);
+    return cB - cA;
   });
   return `<div class="day-hdr"><div class="day-title">${isToday ? 'FRI FEB 20 — TONIGHT' : 'UPCOMING GAMES'}</div><div class="day-line"></div><div class="day-ct">${games.length} GAMES · SORTED BY CONFIDENCE</div></div>`
     + sorted.map(renderUpCard).join('');
@@ -849,15 +818,9 @@ function renderUpcomingSection(games, isToday) {
 
 function renderWeekSections(games) {
   if(!games.length) return `<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-text">NO UPCOMING GAMES THIS WEEK</div></div>`;
-  // Group by CST day
   const byDay = {};
-  games.forEach(g => {
-    const d = utcDay(g.start_time);
-    if(!byDay[d]) byDay[d] = [];
-    byDay[d].push(g);
-  });
-  const days = Object.keys(byDay).sort();
-  return days.map(d => {
+  games.forEach(g => { const d = utcDay(g.start_time); if(!byDay[d]) byDay[d]=[]; byDay[d].push(g); });
+  return Object.keys(byDay).sort().map(d => {
     const dGames = [...byDay[d]].sort((a,b) => new Date(a.start_time)-new Date(b.start_time));
     return `<div class="day-hdr"><div class="day-title">${fmtDayLabel(d)}</div><div class="day-line"></div><div class="day-ct">${dGames.length} GAMES</div></div>`
       + dGames.map(renderUpCard).join('');
@@ -871,15 +834,17 @@ function renderFinalSection(games) {
 }
 
 function renderUpCard(g) {
-  const sp = predSpread(g.home, g.away);
-  const c  = confPct(sp, g.home, g.away);
-  const s  = sig(sp,c);
-  const cc = cardCls(sp,c);
-  const cC = c>=75?'hi':c>=60?'md':'lo';
+  const sp  = predSpread(g.home, g.away);
+  const pick = computePick(g, sp);
+  const c   = confPct(sp, g.home, g.away);
+  const s   = sig(sp, c, pick.isDog);
+  const cc  = cardCls(sp, c, pick.isDog);
+  const cC  = c>=75?'hi':c>=60?'md':'lo';
   const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
-  const fav = sp<0?g.home:sp>0?g.away:'—';
+  const spreadColor = pick.isDog ? 'dog' : 'pick';
+  const displayVal  = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
+  const teamLabel   = pick.pickTeam ? (pick.pickTeam + (pick.isDog ? ' DOG' : ' FAV')) : '—';
   const t = toCST(g.start_time);
-  const hot = cc==='hot';
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
     <div class="gc-teams">
@@ -887,9 +852,9 @@ function renderUpCard(g) {
       <div class="gc-team"><span class="gc-abv">${g.away}</span><span class="gc-fullname">${g.awayFull}</span></div>
     </div>
     <div class="gc-spread">
-      <div class="gc-spread-lbl">SPREAD</div>
-      <div class="gc-spread-val pick">${fmtSp(sp)}</div>
-      <div class="gc-spread-team">${fav} FAV</div>
+      <div class="gc-spread-lbl">THE PICK</div>
+      <div class="gc-spread-val ${spreadColor}">${displayVal}</div>
+      <div class="gc-spread-team">${teamLabel}</div>
     </div>
     <div class="gc-conf">
       <div class="gc-conf-lbl">CONF</div>
@@ -897,27 +862,29 @@ function renderUpCard(g) {
       <div class="gc-bar-wrap"><div class="gc-bar" style="width:${c}%;background:${barC}"></div></div>
     </div>
     <div class="gc-signal">
-      <span class="tag ${s}">${s.toUpperCase()}</span>
+      <span class="tag ${s}">${s === 'dog-play' ? '🐶 DOG' : s.toUpperCase()}</span>
       <span class="tag await">UPCOMING</span>
     </div>
-    <span class="gc-badge ${hot?'hot-pick':'upcoming'}">${hot?'🔥 HOT':'UPCOMING'}</span>
+    <span class="gc-badge ${pick.isDog?'dog-pick':cc==='hot'?'hot-pick':'upcoming'}">${pick.isDog?'🐶 FADE FAV':cc==='hot'?'🔥 HOT':'UPCOMING'}</span>
   </div>`;
 }
 
 function renderFinalCard(g) {
-  const sp = predSpread(g.home, g.away);
-  const c  = confPct(sp, g.home, g.away);
-  const s  = sig(sp,c);
-  const cc = cardCls(sp,c);
-  const cC = c>=75?'hi':c>=60?'md':'lo';
+  const sp  = predSpread(g.home, g.away);
+  const pick = computePick(g, sp);
+  const c   = confPct(sp, g.home, g.away);
+  const s   = sig(sp, c, pick.isDog);
+  const cc  = cardCls(sp, c, pick.isDog);
+  const cC  = c>=75?'hi':c>=60?'md':'lo';
   const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
-  const fav = sp<0?g.home:sp>0?g.away:'—';
   const homeWon = g.homeScore > g.awayScore;
   const actual  = g.homeScore - g.awayScore;
   const coverLine = -sp;
   let res = 'pushed';
   if(actual > coverLine+0.4) res='covered';
   else if(actual < coverLine-0.4) res='missed';
+  const displayVal = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
+  const teamLabel  = pick.pickTeam ? (pick.pickTeam + (pick.isDog ? ' DOG' : ' FAV')) : '—';
   const t = toCST(g.start_time);
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
@@ -926,9 +893,9 @@ function renderFinalCard(g) {
       <div class="gc-team ${!homeWon?'winner':'loser'}"><span class="gc-abv">${g.away}</span><span class="gc-fullname">${g.awayFull}</span><span class="gc-score">${g.awayScore}</span></div>
     </div>
     <div class="gc-spread">
-      <div class="gc-spread-lbl">SPREAD</div>
-      <div class="gc-spread-val fav">${fmtSp(sp)}</div>
-      <div class="gc-spread-team">${fav} FAV</div>
+      <div class="gc-spread-lbl">THE PICK</div>
+      <div class="gc-spread-val fav">${displayVal}</div>
+      <div class="gc-spread-team">${teamLabel}</div>
     </div>
     <div class="gc-conf">
       <div class="gc-conf-lbl">CONF</div>
@@ -936,7 +903,7 @@ function renderFinalCard(g) {
       <div class="gc-bar-wrap"><div class="gc-bar" style="width:${c}%;background:${barC}"></div></div>
     </div>
     <div class="gc-signal">
-      <span class="tag ${s}">${s.toUpperCase()}</span>
+      <span class="tag ${s}">${s === 'dog-play' ? '🐶 DOG' : s.toUpperCase()}</span>
       <span class="result-tag ${res}">${res==='covered'?'✓ COVERED':res==='missed'?'✗ MISSED':'~ PUSH'}</span>
     </div>
     <span class="gc-badge final">FINAL</span>
@@ -952,20 +919,18 @@ function closePanel() {
 }
 
 function selectGame(id) {
-  const g = RAW_GAMES.find(x=>x.id===id);
+  const g = RAW_GAMES.find(x => x.id === id);
   if(!g) return;
-  if(activeCard){ document.getElementById(activeCard)?.classList.remove('active-card'); }
+  if(activeCard) document.getElementById(activeCard)?.classList.remove('active-card');
   document.getElementById(id)?.classList.add('active-card');
   activeCard = id;
-
-  const panel = document.getElementById('ap');
-  panel.classList.remove('collapsed');
+  document.getElementById('ap').classList.remove('collapsed');
 
   const hS = getS(g.home), aS = getS(g.away);
   const sp = predSpread(g.home, g.away);
+  const pick = computePick(g, sp);
   const c  = confPct(sp, g.home, g.away);
 
-  // Matchup
   document.getElementById('apMatchup').innerHTML = `
     <div class="apt home">
       <div class="apt-abv">${g.home}</div>
@@ -980,11 +945,14 @@ function selectGame(id) {
     </div>`;
 
   const cColor = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
+  const pickLabel = pick.pickTeam ? (pick.pickTeam + ' ' + pick.pickSign + pick.displaySpread) : 'PICK EM';
+  const pickType  = pick.isDog ? '🐶 UNDERDOG PLAY' : 'FAVORITE PLAY';
+
   document.getElementById('apMetrics').innerHTML = `
     <div class="apm">
-      <div class="apm-lbl">PRED SPREAD</div>
-      <div class="apm-val" style="color:${sp<0?'var(--red)':'var(--blue)'}">${fmtSp(sp)}</div>
-      <div class="apm-sub">${sp<0?g.home:sp>0?g.away:'EVEN'} favored</div>
+      <div class="apm-lbl">THE PICK</div>
+      <div class="apm-val" style="color:${pick.isDog?'var(--purple)':pick.pickSign==='-'?'var(--red)':'var(--blue)'}">${pick.pickSign||''}${pick.displaySpread||0}</div>
+      <div class="apm-sub">${pick.pickTeam||'EVEN'} · ${pickType}</div>
     </div>
     <div class="apm">
       <div class="apm-lbl">CONFIDENCE</div>
@@ -998,153 +966,104 @@ function selectGame(id) {
     </div>`;
 
   document.getElementById('apBody').innerHTML = `<div class="ai-loading"><div class="ai-spinner"></div><div class="ai-loading-text">ANALYZING ${g.home} vs ${g.away}</div></div>`;
-  runAI(g, hS, aS, sp, c);
+  runAI(g, hS, aS, sp, pick, c);
 }
 
-async function runAI(g, hS, aS, sp, c) {
+async function runAI(g, hS, aS, sp, pick, c) {
   const isFinal   = g.status === 'closed';
-  const favTeam   = sp < 0 ? g.home : sp > 0 ? g.away : null;
-  const favFull   = sp < 0 ? g.homeFull : sp > 0 ? g.awayFull : 'Neither team';
-  const dogTeam   = sp < 0 ? g.away : sp > 0 ? g.home : null;
-  const absSpread = Math.abs(sp);
-  const sigLabel  = sig(sp, c);
-  const hwPwr = pwr(g.home);
-const awPwr = pwr(g.away);
-const hRec = getS(g.home);
-const aRec = getS(g.away);
-const hWinPct = hRec.w / ((hRec.w + hRec.l) || 1);
-const aWinPct = aRec.w / ((aRec.w + aRec.l) || 1);
-const hConfWins = parseInt(hRec.cr.split('-')[0]) || 0;
-const aConfWins = parseInt(aRec.cr.split('-')[0]) || 0;
-const hConfPct = hConfWins / ((parseInt(hRec.cr.split('-')[0]) + parseInt(hRec.cr.split('-')[1])) || 1);
-const aConfPct = aConfWins / ((parseInt(aRec.cr.split('-')[0]) + parseInt(aRec.cr.split('-')[1])) || 1);
-const hPostseason = (hRec.w >= 18 || hRec.r <= 4) ? 1.5 : 0;
-const aPostseason = (aRec.w >= 18 || aRec.r <= 4) ? 1.5 : 0;
-const hScore = (hwPwr * 0.5) + (hWinPct * 20 * 0.2) + (hConfPct * 20 * 0.2) + (hPostseason * 0.1 * 10) + 3.5;
-const aScore = (awPwr * 0.5) + (aWinPct * 20 * 0.2) + (aConfPct * 20 * 0.2) + (aPostseason * 0.1 * 10);
-const roadFavFade = favTeam === g.away && absSpread >= 14;
-const takedog = favTeam && ((hScore > aScore + 3 && favTeam === g.away) || (aScore > hScore + 3 && favTeam === g.home) || roadFavFade);
-const pickTeam = takedog ? dogTeam : favTeam;
-const pickSign = takedog ? '+' : '-';
-const spreadStr = pickTeam ? (pickTeam + ' ' + pickSign + absSpread) : 'PICK EM';
+  const absSpread = pick.displaySpread;
+  const pickTeam  = pick.pickTeam;
+  const isDog     = pick.isDog;
+  const sigLabel  = sig(sp, c, isDog);
+  const spreadStr = pickTeam ? (pickTeam + ' ' + pick.pickSign + absSpread) : 'PICK EM';
   const pwrDiff   = pwr(g.home) - pwr(g.away);
   const pwrFav    = pwrDiff >= 0 ? g.home : g.away;
   const absPwr    = Math.abs(pwrDiff);
-  const netEdge   = (absPwr * 0.28 + 3.5).toFixed(1);
   const margin    = isFinal ? (g.homeScore - g.awayScore) : 0;
   const covered   = isFinal ? Math.abs(margin) > absSpread - 0.5 : false;
 
-  // Pre-build conditional fragments (avoids nested template literals)
   const statusLine = isFinal
     ? 'RESULT: FINAL — ' + g.home + ' ' + g.homeScore + ', ' + g.away + ' ' + g.awayScore
       + ' | Margin: ' + (margin >= 0 ? '+' : '') + margin
       + ' | Pick: ' + (covered ? 'COVERED ✓' : 'MISSED ✗')
     : 'UPCOMING — ' + toCST(g.start_time) + ' CT';
 
+  const dogContext = isDog
+    ? 'IMPORTANT: This is an UNDERDOG play. The model sees value in taking ' + pickTeam + ' +' + absSpread + ' because the composite score (power ratings, win%, conf record, net rating) suggests the game will be closer than the spread implies. Build the case for why ' + pickTeam + ' covers as the dog.'
+    : 'This is a FAVORITE play. Build the case for why ' + pickTeam + ' covers ' + absSpread + ' points.';
+
   const toneInstr = isFinal
-    ? (covered
-        ? 'The pick COVERED. Explain what drove the result and why the model was right.'
-        : 'The pick MISSED. Explain honestly what caused the underperformance while noting the pick still had logical merit.')
-    : (c >= 75
-        ? 'Write with strong conviction. This is a HIGH confidence pick.'
-        : c >= 60
-        ? 'Write with measured confidence. Solid pick but acknowledge it could be close.'
-        : 'Write with cautious reasoning. Acknowledge the toss-up nature while defending the angle.');
+    ? (covered ? 'The pick COVERED. Explain what drove the result.' : 'The pick MISSED. Explain honestly what caused it while noting the logical basis.')
+    : (c >= 75 ? 'Write with strong conviction.' : c >= 60 ? 'Write with measured confidence.' : 'Write with cautious reasoning, acknowledge toss-up nature.');
 
-  const spreadJustify = isFinal
-    ? 'Evaluate whether the actual ' + g.homeScore + '-' + g.awayScore + ' final (' + (margin >= 0 ? '+' : '') + margin + ') validated or undercut the ' + spreadStr + ' prediction and why.'
-    : 'Make the ATS case for ' + (favTeam || g.home) + ' covering ' + absSpread + ' points tonight.';
-
-  const verdictStart = spreadStr + ' —';
-
-  // Pull real team stats if available
   const hStat = getStat(g.home);
   const aStat = getStat(g.away);
   const hStatLine = hStat
-    ? g.home + ' REAL STATS: ' + hStat.ppg + ' PPG | ' + hStat.opp + ' OPP PPG | ' + hStat.reb + ' RPG | ' + hStat.ast + ' APG | ' + hStat.fgp + '% FG | ' + hStat.tsp + '% TS | OffRtg ' + hStat.offr + ' | DefRtg ' + hStat.defr + ' | ' + hStat.stl + ' SPG | ' + hStat.blk + ' BPG\n  Context: ' + hStat.note
-    : g.home + ': Advanced stats not available — use power rating ' + pwr(g.home);
+    ? g.home + ' STATS: ' + hStat.ppg + ' PPG | ' + hStat.opp + ' OPP PPG | OffRtg ' + hStat.offr + ' | DefRtg ' + hStat.defr + ' | ' + hStat.fgp + '% FG | ' + hStat.tsp + '% TS | ' + hStat.reb + ' RPG | ' + hStat.stl + ' SPG\n  Note: ' + hStat.note
+    : g.home + ': Use power rating ' + pwr(g.home);
   const aStatLine = aStat
-    ? g.away + ' REAL STATS: ' + aStat.ppg + ' PPG | ' + aStat.opp + ' OPP PPG | ' + aStat.reb + ' RPG | ' + aStat.ast + ' APG | ' + aStat.fgp + '% FG | ' + aStat.tsp + '% TS | OffRtg ' + aStat.offr + ' | DefRtg ' + aStat.defr + ' | ' + aStat.stl + ' SPG | ' + aStat.blk + ' BPG\n  Context: ' + aStat.note
-    : g.away + ': Advanced stats not available — use power rating ' + pwr(g.away);
+    ? g.away + ' STATS: ' + aStat.ppg + ' PPG | ' + aStat.opp + ' OPP PPG | OffRtg ' + aStat.offr + ' | DefRtg ' + aStat.defr + ' | ' + aStat.fgp + '% FG | ' + aStat.tsp + '% TS | ' + aStat.reb + ' RPG | ' + aStat.stl + ' SPG\n  Note: ' + aStat.note
+    : g.away + ': Use power rating ' + pwr(g.away);
 
-  // Derive matchup stat angles
-  const hPPG = hStat ? hStat.ppg : 75;
-  const aPPG = aStat ? aStat.ppg : 75;
-  const hDef = hStat ? hStat.defr : 100;
-  const aDef = aStat ? aStat.defr : 100;
-  const projScore = hStat && aStat
-    ? 'Projected pace: ' + g.home + ' ~' + ((hStat.ppg * 0.6 + (100 - aStat.defr) * 0.4 + 2).toFixed(0)) + ' | ' + g.away + ' ~' + ((aStat.ppg * 0.6 + (100 - hStat.defr) * 0.4 - 2).toFixed(0)) + ' (home court adjusted)'
-    : '';
+  const hasRealLine = Object.keys(REAL_LINES).some(k => { const [ht,at]=k.split('|'); return ht===g.home&&at===g.away; });
+  const lineSource = hasRealLine ? 'REAL FANDUEL LINE' : 'ALGORITHMIC LINE';
 
   const prompt =
-    'You are a sharp college basketball analyst. Your ONLY job is to BUILD THE CASE for the specific pick below. Do NOT second-guess it. Cite the REAL statistical data to prove WHY this pick wins.\n\n'
+    'You are a sharp college basketball analyst. Build the case for the specific pick below using real stats.\n\n'
     + '=== THE PICK ===\n'
-    + spreadStr + ' | Signal: ' + sigLabel.toUpperCase() + ' | Confidence: ' + c + '%\n'
-    + statusLine + '\n\n'
-    + '=== RECORDS & STANDINGS ===\n'
-    + 'HOME (' + g.home + ' — ' + g.homeFull + '): '
-    + hS.w + '-' + hS.l + ' overall | ' + hS.conf + ' #' + hS.r + ' | Conf: ' + hS.cr + '\n'
-    + 'AWAY (' + g.away + ' — ' + g.awayFull + '): '
-    + aS.w + '-' + aS.l + ' overall | ' + aS.conf + ' #' + aS.r + ' | Conf: ' + aS.cr + '\n\n'
-    + '=== REAL 2025-26 STATISTICAL DATA (source: FOX Sports / ESPN / CBS Sports) ===\n'
+    + spreadStr + ' | ' + (isDog ? '🐶 UNDERDOG PLAY' : 'FAVORITE PLAY') + ' | Confidence: ' + c + '% | Source: ' + lineSource + '\n'
+    + statusLine + '\n'
+    + dogContext + '\n\n'
+    + '=== RECORDS ===\n'
+    + g.home + ': ' + hS.w + '-' + hS.l + ' | ' + hS.conf + ' #' + hS.r + ' | Conf: ' + hS.cr + '\n'
+    + g.away + ': ' + aS.w + '-' + aS.l + ' | ' + aS.conf + ' #' + aS.r + ' | Conf: ' + aS.cr + '\n\n'
+    + '=== STATS ===\n'
     + hStatLine + '\n'
     + aStatLine + '\n'
-    + (projScore ? projScore + '\n' : '')
-    + 'Power ratings: ' + g.home + '=' + pwr(g.home) + ', ' + g.away + '=' + pwr(g.away)
-    + ' | ' + pwrFav + ' has +' + absPwr + ' point power edge\n'
-    + 'Home court: +3.5 pts for ' + g.home + ' | Model net edge for ' + (favTeam || 'neither') + ': ' + netEdge + ' pts\n\n'
-    + '=== YOUR INSTRUCTIONS ===\n'
+    + 'Power ratings: ' + g.home + '=' + pwr(g.home) + ', ' + g.away + '=' + pwr(g.away) + ' | Edge: ' + pwrFav + ' +' + absPwr + '\n'
+    + 'Home court: +3.5 pts for ' + g.home + '\n\n'
+    + '=== INSTRUCTIONS ===\n'
     + toneInstr + '\n'
-    + 'CRITICAL: You MUST reference specific real numbers from the statistical data above (PPG, DefRtg, FG%, RPG, etc.) in EVERY section. Do not be vague — cite the numbers.\n'
-    + 'Every section must support the pick: ' + spreadStr + '\n'
-    + '3-4 sentences per section. No bullet points.\n\n'
-    + 'FORMAT — use these exact section headers:\n\n'
-    + '§OVERVIEW\n'
-    + '[Lead with the stat that most supports the pick. Contrast ' + (pickTeam||g.home) + "'s key offensive/defensive numbers vs opponent. Reference their PPG differential, DefRtg, and conference standing to frame why this team wins big.]\n\n"
-    + '§SPREAD & BETTING ANGLE\n'
-    + '[Use OffRtg vs DefRtg matchup numbers to justify the ' + absSpread + '-pt spread. ' + spreadJustify + ' Compare FG% and TS% of both teams to explain efficiency edge.]\n\n'
-    + '§KEY FACTORS\n'
-    + '[Pick 2-3 statistical edges — rebounding margin, steals/turnovers, 3PT shooting — that favor ' + spreadStr + '. Cite the actual numbers. Factor in home court and travel.]\n\n'
-    + '§POSTSEASON IMPLICATIONS\n'
-    + '[March stakes — bubble status, seeding, auto bid. How do those stakes affect intensity and the spread? Reference their records and conf standing numbers.]\n\n'
-    + '§VERDICT\n'
-    + '[Start your verdict with exactly: "' + verdictStart + '" then complete with conviction. Name the single statistical X-factor (a specific number/metric) that seals this pick.]';
+    + 'Cite specific numbers in EVERY section. 3-4 sentences per section. No bullet points.\n\n'
+    + '§OVERVIEW\n[Lead with the stat most supporting the pick. Frame why ' + (pickTeam||g.home) + ' wins this matchup.]\n\n'
+    + '§SPREAD & BETTING ANGLE\n[Use OffRtg/DefRtg and FG%/TS% to justify the ' + absSpread + '-pt spread. ' + (isDog ? 'Explain why the line is overvalued and the dog has value.' : 'Make the ATS case for ' + pickTeam + ' covering.') + ']\n\n'
+    + '§KEY FACTORS\n[2-3 statistical edges — rebounding, steals, efficiency — that favor this pick. Factor in home court and postseason stakes.]\n\n'
+    + '§HISTORICAL TRENDS & CONTEXT\n[Reference conference standing, recent form, and any relevant situational spots (revenge, rivalry, desperation). How do postseason implications affect both teams\' intensity?]\n\n'
+    + '§VERDICT\n[Start with exactly: "' + spreadStr + ' —" then give a conviction statement. Name the single X-factor stat that seals this pick.]';
 
   try {
     const res = await fetch("/api/analyze", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }]
       })
     });
     const data = await res.json();
     const text = data.content?.map(c => c.text || '').join('') || '';
-    renderAI(text, g, hS, aS, sp, c);
+    renderAI(text, g, hS, aS, sp, pick, c);
   } catch(e) {
-    renderAIFallback(g, hS, aS, sp, c);
+    renderAIFallback(g, hS, aS, sp, pick, c);
   }
 }
 
-
 function parseSection(text, tag) {
-  const rx = new RegExp(`§${tag}\\n([\\s\\S]*?)(?=§|$)`,'i');
+  const rx = new RegExp('§' + tag + '\\n([\\s\\S]*?)(?=§|$)', 'i');
   const m = text.match(rx);
   return m ? m[1].trim() : '';
 }
 
-function renderAI(text, g, hS, aS, sp, c) {
-  const overview   = parseSection(text,'OVERVIEW');
-  const betting    = parseSection(text,'SPREAD & BETTING ANGLE');
-  const factors    = parseSection(text,'KEY FACTORS');
-  const postseason = parseSection(text,'POSTSEASON IMPLICATIONS');
-  const verdict    = parseSection(text,'VERDICT');
+function renderAI(text, g, hS, aS, sp, pick, c) {
+  const overview  = parseSection(text, 'OVERVIEW');
+  const betting   = parseSection(text, 'SPREAD & BETTING ANGLE');
+  const factors   = parseSection(text, 'KEY FACTORS');
+  const trends    = parseSection(text, 'HISTORICAL TRENDS & CONTEXT');
+  const verdict   = parseSection(text, 'VERDICT');
   const hPct = ((hS.w/(hS.w+hS.l||1))*100).toFixed(0);
   const aPct = ((aS.w/(aS.w+aS.l||1))*100).toFixed(0);
-  const favTeam = sp<0?g.home:sp>0?g.away:'EVEN';
-  const s = sig(sp,c);
+  const s = sig(sp, c, pick.isDog);
+  const spreadStr = pick.pickTeam ? (pick.pickTeam + ' ' + pick.pickSign + pick.displaySpread) : 'PICK EM';
 
   document.getElementById('apBody').innerHTML = `<div class="ai-content fade-in">
 
@@ -1162,24 +1081,25 @@ function renderAI(text, g, hS, aS, sp, c) {
         ${(()=>{
           const hs = getStat(g.home); const as_ = getStat(g.away);
           if(hs && as_) {
-            const hFav = hs.ppg > as_.ppg; const dFav = hs.defr < as_.defr;
             return `
-              <div style="font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:6px">◆ REAL 2025-26 SEASON DATA — FOX SPORTS / ESPN</div>
+              <div style="font-size:8px;color:var(--gold);letter-spacing:2px;margin-bottom:6px">◆ REAL 2025-26 DATA — FOX SPORTS / ESPN</div>
               <div class="stat-row"><span class="stat-lbl">SCORING OFF / DEF</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.ppg}</span> / <span style="color:var(--red)">${g.away} ${as_.ppg}</span> PPG</span></div>
-              <div class="stat-row"><span class="stat-lbl">OPP PTS ALLOWED</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.opp}</span> / <span style="color:var(--red)">${g.away} ${as_.opp}</span> opp PPG</span></div>
+              <div class="stat-row"><span class="stat-lbl">OPP PTS ALLOWED</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.opp}</span> / <span style="color:var(--red)">${g.away} ${as_.opp}</span></span></div>
               <div class="stat-row"><span class="stat-lbl">OFF / DEF RATING</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.offr}/${hs.defr}</span> · <span style="color:var(--red)">${g.away} ${as_.offr}/${as_.defr}</span></span></div>
+              <div class="stat-row"><span class="stat-lbl">NET RATING</span><span class="stat-val"><span style="color:${(hs.offr-hs.defr)>(as_.offr-as_.defr)?'var(--accent)':'var(--red)'}">${g.home} +${(hs.offr-hs.defr).toFixed(1)}</span> vs <span style="color:${(as_.offr-as_.defr)>0?'var(--accent)':'var(--red)'}">${g.away} +${(as_.offr-as_.defr).toFixed(1)}</span></span></div>
               <div class="stat-row"><span class="stat-lbl">FG% / TRUE SHOOT%</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.fgp}/${hs.tsp}</span> · <span style="color:var(--red)">${g.away} ${as_.fgp}/${as_.tsp}</span></span></div>
               <div class="stat-row"><span class="stat-lbl">REBOUNDS / ASSISTS</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.reb}r/${hs.ast}a</span> · <span style="color:var(--red)">${g.away} ${as_.reb}r/${as_.ast}a</span></span></div>
               <div class="stat-row"><span class="stat-lbl">STEALS / BLOCKS</span><span class="stat-val"><span style="color:var(--accent)">${g.home} ${hs.stl}s/${hs.blk}b</span> · <span style="color:var(--red)">${g.away} ${as_.stl}s/${as_.blk}b</span></span></div>
               <div class="stat-row"><span class="stat-lbl">PPG DIFFERENTIAL</span><span class="stat-val"><span style="color:${(hs.ppg-hs.opp)>0?'var(--accent)':'var(--red)'}">${g.home} +${(hs.ppg-hs.opp).toFixed(1)}</span> vs <span style="color:${(as_.ppg-as_.opp)>0?'var(--accent)':'var(--red)'}">${g.away} +${(as_.ppg-as_.opp).toFixed(1)}</span></span></div>
               <div class="stat-row"><span class="stat-lbl">POWER RATING EDGE</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)} pts · ${g.home} ${pwr(g.home)>=pwr(g.away)?'STRONGER':'WEAKER'}</span></div>
               <div class="stat-row"><span class="stat-lbl">HOME COURT BONUS</span><span class="stat-val pos">+3.5 pts · ${g.home}</span></div>
+              ${pick.isDog?`<div class="stat-row"><span class="stat-lbl" style="color:var(--purple)">🐶 DOG VALUE PLAY</span><span class="stat-val" style="color:var(--purple)">MODEL FADING FAVORITE</span></div>`:''}
             `;
           } else {
             return `
               <div class="stat-row"><span class="stat-lbl">CONF RANK (HOME)</span><span class="stat-val">#${hS.r} in ${hS.conf} · ${hS.cr}</span></div>
               <div class="stat-row"><span class="stat-lbl">CONF RANK (AWAY)</span><span class="stat-val">#${aS.r} in ${aS.conf} · ${aS.cr}</span></div>
-              <div class="stat-row"><span class="stat-lbl">POWER RATING DIFF</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)} (${g.home} ${pwr(g.home)>=pwr(g.away)?'STRONGER':'WEAKER'})</span></div>
+              <div class="stat-row"><span class="stat-lbl">POWER RATING DIFF</span><span class="stat-val ${pwr(g.home)>=pwr(g.away)?'pos':'neg'}">${pwr(g.home)>=pwr(g.away)?'+':''}${pwr(g.home)-pwr(g.away)}</span></div>
               <div class="stat-row"><span class="stat-lbl">HOME COURT EDGE</span><span class="stat-val pos">+3.5 pts</span></div>
             `;
           }
@@ -1193,31 +1113,31 @@ function renderAI(text, g, hS, aS, sp, c) {
     </div>`:''}
 
     ${factors?`<div class="ai-sec">
-      <div class="ai-sec-hdr"><span class="ai-sec-icon">✈️</span><div class="ai-sec-title">KEY FACTORS</div></div>
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">🔑</span><div class="ai-sec-title">KEY FACTORS</div></div>
       <div class="ai-sec-body">${factors}</div>
     </div>`:''}
 
-    ${postseason?`<div class="ai-sec">
-      <div class="ai-sec-hdr"><span class="ai-sec-icon">🏆</span><div class="ai-sec-title">POSTSEASON IMPLICATIONS</div></div>
-      <div class="ai-sec-body">${postseason}</div>
+    ${trends?`<div class="ai-sec">
+      <div class="ai-sec-hdr"><span class="ai-sec-icon">📅</span><div class="ai-sec-title">HISTORICAL TRENDS & CONTEXT</div></div>
+      <div class="ai-sec-body">${trends}</div>
     </div>`:''}
 
     ${verdict?`<div class="ai-sec">
       <div class="ai-sec-hdr"><span class="ai-sec-icon">⚡</span><div class="ai-sec-title">VERDICT</div></div>
       <div class="ai-verdict">
-        <div class="ai-verdict-lbl">THE PICK — ${(sp<0?g.home:sp>0?g.away:'EVEN')} ${sp!==0?('-'+Math.abs(sp)):''} · ${s.toUpperCase()} · ${c}% CONFIDENCE</div>
+        <div class="ai-verdict-lbl">THE PICK — ${spreadStr} · ${s === 'dog-play' ? '🐶 UNDERDOG' : s.toUpperCase()} · ${c}% CONFIDENCE</div>
         <div class="ai-verdict-main">${verdict}</div>
-        <div class="ai-verdict-sub">Algorithmic spread: <strong>${fmtSp(sp)}</strong> · Favored: <strong>${favTeam}</strong> · Signal: <strong>${s.toUpperCase()}</strong> · Confidence: <strong>${c}%</strong></div>
+        <div class="ai-verdict-sub">Vegas line: <strong>${fmtSp(sp)}</strong> · Pick: <strong>${spreadStr}</strong> · Type: <strong>${pick.isDog ? '🐶 FADE FAVORITE' : 'TAKE FAVORITE'}</strong> · Conf: <strong>${c}%</strong></div>
       </div>
     </div>`:''}
 
   </div>`;
 }
 
-function renderAIFallback(g, hS, aS, sp, c) {
+function renderAIFallback(g, hS, aS, sp, pick, c) {
   const hPct = ((hS.w/(hS.w+hS.l||1))*100).toFixed(0);
   const aPct = ((aS.w/(aS.w+aS.l||1))*100).toFixed(0);
-  const favTeam = sp<0?g.home:sp>0?g.away:'EVEN';
+  const spreadStr = pick.pickTeam ? (pick.pickTeam + ' ' + pick.pickSign + pick.displaySpread) : 'PICK EM';
   document.getElementById('apBody').innerHTML = `<div class="ai-content fade-in">
     <div class="ai-sec">
       <div class="ai-sec-hdr"><span class="ai-sec-icon">📈</span><div class="ai-sec-title">TEAM COMPARISON</div></div>
@@ -1232,9 +1152,9 @@ function renderAIFallback(g, hS, aS, sp, c) {
     </div>
     <div class="ai-sec">
       <div class="ai-verdict">
-        <div class="ai-verdict-lbl">SPREAD PREDICTION</div>
-        <div class="ai-verdict-main">${favTeam} ${fmtSp(sp)} · ${c}% confidence</div>
-        <div class="ai-verdict-sub">AI detailed analysis unavailable — check network settings. Data based on real 2025-26 standings and power ratings.</div>
+        <div class="ai-verdict-lbl">THE PICK</div>
+        <div class="ai-verdict-main">${spreadStr} · ${c}% confidence</div>
+        <div class="ai-verdict-sub">AI analysis unavailable. Data based on real 2025-26 standings and power ratings.</div>
       </div>
     </div>
   </div>`;
@@ -1243,7 +1163,7 @@ function renderAIFallback(g, hS, aS, sp, c) {
 // ═══════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════
-renderList();
+loadOdds().then(() => renderList());
 </script>
 </body>
 </html>
