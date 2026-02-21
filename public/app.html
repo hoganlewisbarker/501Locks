@@ -630,85 +630,30 @@ function getStat(t){ return TEAM_STATS[t]||null; }
 // ── REAL VEGAS LINES (FanDuel/DraftKings/BetMGM consensus, Feb 20-21 2026) ──
 // Negative = home team favored by that amount. Positive = away team favored.
 // Source: OddsShark, TheSpread.com, DraftKings/FanDuel live boards
-const REAL_LINES = {
-  // ── TONIGHT (Feb 20 CST) ──
-  "BALL-AKR":    14.5,   // Akron -14.5 (FD: -14.5 / DK: -14.5)
-  "IONA-SPC":   -6.0,    // Iona -6 home favorite
-  "FAIR-SHU":   -5.0,    // Fairfield -5 (TheSpread confirmed)
-  "SLU-VCU":    -7.5,    // Saint Louis -7.5 (TheSpread confirmed)
-  "BRWN-PRIN":   3.0,    // Princeton -3 (road fav)
-  "PUR-IND":    -11.5,   // Purdue -11.5 (TheSpread confirmed: Purdue home -11.5)
-  "M-OH-BGSU":  -7.5,    // Miami OH -7.5 (confirmed FanDuel/OddsShark — 26-0 but only -7.5)
-  // ── SATURDAY Feb 21 ──
-  "VT-WAKE":    -6.5,    // VT -6.5 home
-  "CLEM-FSU":   -12.0,   // Clemson -12 home
-  "MINN-RUTG":  -3.0,    // Minnesota -3 home
-  "MISS-FLA":    5.0,    // Florida -5 (road fav)
-  "SJU-CREI":   -13.5,   // St. John's -13.5 home (91% win prob, confirmed FOX/ESPN)
-  "SCAR-MSST":  -2.0,    // SCAR -2 home
-  "KU-CIN":     -10.5,   // Kansas -10.5 home (confirmed ESPN DraftKings live)
-  "SYR-UNC":     3.5,    // UNC -3.5 (road fav, confirmed ESPN live)
-  "BUT-XAV":    -2.0,    // Butler -2 home
-  "VAN-TENN":   -3.5,    // Vanderbilt -3.5 home (confirmed ESPN live)
-  "PITT-ND":     4.5,    // Notre Dame -4.5 (road fav)
-  "NEB-PSU":    -8.5,    // Nebraska -8.5 home
-  "UVA-MIA":    -4.0,    // Virginia -4 home
-  "LOU-GT":     -11.0,   // Louisville -11 home
-  "DAY-DUQ":    -8.5,    // Dayton -8.5 home
-  "TTU-KSU":    -9.0,    // Texas Tech -9 home
-  "HOU-ARIZ":   -4.5,    // Houston -4.5 home (CBS: opened -3.5, moved to -5.5)
-  "MD-WASH":    -4.0,    // Maryland -4 home
-  "UGA-TEX":     3.5,    // Texas -3.5 (road fav)
-  "COLO-OKST":  -2.0,    // Colorado -2 home
-  "ARK-MIZZ":   -4.5,    // Arkansas -4.5 home
-  "USC-ORE":    -3.5,    // USC -3.5 home
-  "BAY-ASU":    -5.5,    // Baylor -5.5 home
-  "TCU-WVU":    -3.0,    // TCU -3 home
-  "VILL-CONN":   5.0,    // UConn -5 (road fav — defending Big East)
-  "LSU-ALA":     4.5,    // Alabama -4.5 (road fav)
-  "HALL-GTWN":  -9.5,    // Seton Hall -9.5 home
-  "DUKE-MICH":   2.5,    // Michigan -2.5 ROAD FAV at Duke (confirmed ESPN/BetMGM/FOX)
-  // ── SUNDAY Feb 22 ──
-  "UCLA-ILL":    2.0,    // Illinois -2 (road fav)
-  "AUB-UK":      2.5,    // Kentucky -2.5 ROAD FAV at Auburn (Auburn 5-game L streak)
-  "OKLA-TXAM":   3.5,    // Texas A&M -3.5 (road fav)
-  "BYU-ISU":     3.5,    // Iowa State -3.5 (road fav)
-  "GONZ-PAC":   -22.5,   // Gonzaga -22.5 home
-  "MSU-OSU":    -4.5,    // Michigan State -4.5 home
-  "WIS-IOWA":   -2.5,    // Wisconsin -2.5 home
-  // ── LATER WEEK ──
-  "KU-HOU":     -1.5,    // Kansas -1.5 home (rematch)
-  "ND-DUKE":     8.0,    // Duke -8 (road fav)
-  "IND-NW":     -6.5,    // Indiana -6.5 home
-  "SCAR-UK":     6.0,    // Kentucky -6 (road fav)
-  "CONN-SJU":   -3.0,    // UConn -3 home (rematch)
-  "VAN-UGA":    -6.0,    // Vanderbilt -6 home
-  "MICH-MINN":  -17.5,   // Michigan -17.5 home
-  "MIZZ-TENN":   2.5,    // Tennessee -2.5 (road fav)
-  "BAY-ARIZ":    3.5,    // Arizona -3.5 (road fav)
-  "UCLA-USC":   -1.5,    // UCLA -1.5 home
-  "TEX-FLA":    -1.5,    // Texas -1.5 home
-  "NEB-MD":     -5.5,    // Nebraska -5.5 home
-  "ARK-TXAM":   -3.0,    // Arkansas -3 home
-  "MISS-LSU":    3.0,    // LSU -3 (road fav)
-  "IOWA-OSU":   -3.5,    // Iowa -3.5 home
-  "GONZ-PORT":  -24.5,   // Gonzaga -24.5 home
-  "ORE-WIS":     3.5,    // Wisconsin -3.5 (road fav)
-  "PUR-MSU":    -2.5,    // Purdue -2.5 home
-  "ILL-MICH":    7.5,    // Michigan -7.5 (road fav)
-  "CONN-SJU2":  -3.0,    // UConn -3 home
+let REAL_LINES = {};
+
+async function loadOdds() {
+  try {
+    const res = await fetch('/api/odds');
+    const data = await res.json();
+    if (data.lines) REAL_LINES = data.lines;
+  } catch(e) {
+    console.log('Odds fetch failed, using algorithmic spreads');
+  }
+}
+
+function predSpread(h, a) {
+  const key = Object.keys(REAL_LINES).find(k => {
+    const [ht, at] = k.split('|');
+    return (ht.includes(h) || h.includes(ht)) && (at.includes(a) || a.includes(at));
+  });
+  if (key !== undefined) return REAL_LINES[key];
+  const diff = (pwr(h) - pwr(a)) * 0.28 + 3.5;
+  const seed = (h.charCodeAt(0) * 3 + a.charCodeAt(0) * 7) % 11 - 5;
+  return Math.round((diff + seed * 0.3) * 2) / 2;
 };
 
-function predSpread(h,a){
-  const key = h + '-' + a;
-  const keyRev = a + '-' + h;
-  if(REAL_LINES[key] !== undefined) return REAL_LINES[key];
-  if(REAL_LINES[keyRev] !== undefined) return -REAL_LINES[keyRev];
-  // Fallback: algorithmic estimate when no real line available
-  const diff = (pwr(h)-pwr(a))*0.28 + 3.5;
-  const seed = (h.charCodeAt(0)*3+a.charCodeAt(0)*7)%11-5;
-  return Math.round((diff+seed*0.3)*2)/2;
-}
+
 function confPct(sp){
   const a=Math.abs(sp);
   if(a>=15)return 94; if(a>=10)return 84+(a-10);
@@ -862,7 +807,7 @@ function setTab(t) {
   if(t==='today')  document.getElementById('tab-today').classList.add('active');
   if(t==='week')   document.getElementById('tab-week').classList.add('active-week');
   if(t==='final')  document.getElementById('tab-final').classList.add('active-final');
-  renderList();
+  loadOdds().then(() => renderList());
 }
 
 // ═══════════════════════════════════════════════════════
