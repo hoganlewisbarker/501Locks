@@ -565,9 +565,9 @@ function computePick(g, sp) {
 
   // Take the dog if: model thinks game is significantly closer than spread suggests
   // OR road favorite on a big number
-  const takedog = roadFavFade ||
-    (favTeam === g.home && valueGap < -4) ||   // home favored but model says close
-    (favTeam === g.away && valueGap > 4);       // road fav but model says home is closer
+ const takedog = roadFavFade ||
+    (favTeam === g.away && valueGap < -4) ||
+    (favTeam === g.home && valueGap > 4);
 
   const pickTeam = takedog ? dogTeam : favTeam;
   const isDog = takedog;
