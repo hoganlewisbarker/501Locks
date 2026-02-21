@@ -843,7 +843,8 @@ function renderUpCard(g) {
   const barC = c>=75?'var(--accent)':c>=60?'var(--gold)':'var(--red)';
   const spreadColor = pick.isDog ? 'dog' : 'pick';
   const displayVal  = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
-  const teamLabel   = pick.pickTeam ? (pick.pickTeam + (pick.isDog ? ' DOG' : ' FAV')) : '—';
+  const isCovering = pick.pickSign === '-';
+const teamLabel = pick.pickTeam ? (pick.pickTeam + (isCovering ? ' -' + pick.displaySpread : ' +' + pick.displaySpread)) : '—';
   const t = toCST(g.start_time);
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
