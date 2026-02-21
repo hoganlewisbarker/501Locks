@@ -516,68 +516,11 @@ function predSpread(h, a) {
 //  Returns { pickTeam, isDog, displaySpread, pickSign }
 // ═══════════════════════════════════════════════════════
 function computePick(g, sp) {
-  const absSpread = Math.abs(sp);
   const favTeam = sp < 0 ? g.home : sp > 0 ? g.away : null;
-  const dogTeam  = sp < 0 ? g.away : sp > 0 ? g.home : null;
-
-  if (!favTeam) return { pickTeam: null, isDog: false, displaySpread: 0, pickSign: '', favTeam: null, dogTeam: null, absSpread: 0 };
-
-  const hR = getS(g.home), aR = getS(g.away);
-  const hStat = getStat(g.home), aStat = getStat(g.away);
-
-  // Win percentage
-  const hWP = hR.w / ((hR.w + hR.l) || 1);
-  const aWP = aR.w / ((aR.w + aR.l) || 1);
-
-  // Conference record percentage
-  const hCW = parseInt(hR.cr.split('-')[0])||0, hCL = parseInt(hR.cr.split('-')[1])||1;
-  const aCW = parseInt(aR.cr.split('-')[0])||0, aCL = parseInt(aR.cr.split('-')[1])||1;
-  const hCP = hCW/((hCW+hCL)||1), aCP = aCW/((aCW+aCL)||1);
-
-  // Net rating (if available)
-  const hNetRtg = hStat ? (hStat.offr - hStat.defr) : (pwr(g.home) - 80);
-  const aNetRtg = aStat ? (aStat.offr - aStat.defr) : (pwr(g.away) - 80);
-
-  // Postseason pressure (bubble/seeding teams play harder)
-  const hPost = (hR.w >= 18 || hR.r <= 4) ? 2.0 : 0;
-  const aPost = (aR.w >= 18 || aR.r <= 4) ? 2.0 : 0;
-
-  // Home court value (real home court = 3-4 pts historically)
-  const homeCourt = 3.5;
-
-  // Composite team strength score (higher = stronger)
-  const hScore = (pwr(g.home) * 0.40) + (hWP * 25 * 0.20) + (hCP * 25 * 0.18) + (hNetRtg * 0.15) + hPost + homeCourt;
-  const aScore = (pwr(g.away) * 0.40) + (aWP * 25 * 0.20) + (aCP * 25 * 0.18) + (aNetRtg * 0.15) + aPost;
-
-  const scoreDiff = hScore - aScore; // positive = home stronger
-
-  // Expected margin based on composite scores
-  const expectedMargin = scoreDiff * 0.7;
-
-  // Vegas line
-  const vegasMargin = -sp; // negative sp = home favored, so vegasMargin > 0 means home favored
-
-  // Value gap: positive = home is undervalued, negative = away is undervalued
-  const valueGap = expectedMargin - vegasMargin;
-
-  // Fade rule: if spread > 14 and road favorite, historically bad ATS
-  const roadFavFade = favTeam === g.away && absSpread >= 14;
-
-  // Take the dog if: model thinks game is significantly closer than spread suggests
-  // OR road favorite on a big number
-  const takedog = roadFavFade ||
-    (favTeam === g.home && valueGap < -4) ||   // home favored but model says close
-    (favTeam === g.away && valueGap > 4);       // road fav but model says home is closer
-
-  const pickTeam = takedog ? dogTeam : favTeam;
-  const isDog = takedog;
-  const pickSign = (pickTeam === g.home ? (sp < 0 ? '-' : '+') : (sp > 0 ? '-' : '+'));
-
-  // Correct sign logic: favored team gets -, dog gets +
-  const isFavPick = pickTeam === favTeam;
-  const finalSign = isFavPick ? '-' : '+';
-
-  return { pickTeam, isDog, displaySpread: absSpread, pickSign: finalSign, favTeam, dogTeam, absSpread };
+  const dogTeam = sp < 0 ? g.away : sp > 0 ? g.home : null;
+  const absSpread = Math.abs(sp);
+  if (!favTeam) return { pickTeam: null, isDog: false, displaySpread: 0, pickSign: "-", favTeam: null, dogTeam: null, absSpread: 0 };
+  return { pickTeam: favTeam, isDog: false, displaySpread: absSpread, pickSign: "-", favTeam, dogTeam, absSpread };
 }
 
 // ═══════════════════════════════════════════════════════
