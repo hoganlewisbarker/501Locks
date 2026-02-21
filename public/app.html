@@ -645,7 +645,7 @@ async function loadOdds() {
 function predSpread(h, a) {
   const key = Object.keys(REAL_LINES).find(k => {
     const [ht, at] = k.split('|');
-    return (ht.includes(h) || h.includes(ht)) && (at.includes(a) || a.includes(at));
+    return ht === h && at === a;
   });
   if (key !== undefined) return REAL_LINES[key];
   const diff = (pwr(h) - pwr(a)) * 0.28 + 3.5;
@@ -992,7 +992,25 @@ async function runAI(g, hS, aS, sp, c) {
   const dogTeam   = sp < 0 ? g.away : sp > 0 ? g.home : null;
   const absSpread = Math.abs(sp);
   const sigLabel  = sig(sp, c);
-  const spreadStr = favTeam ? (favTeam + ' -' + absSpread) : 'PICK EM';
+  const hwPwr = pwr(g.home);
+const awPwr = pwr(g.away);
+const hRec = getS(g.home);
+const aRec = getS(g.away);
+const hWinPct = hRec.w / ((hRec.w + hRec.l) || 1);
+const aWinPct = aRec.w / ((aRec.w + aRec.l) || 1);
+const hConfWins = parseInt(hRec.cr.split('-')[0]) || 0;
+const aConfWins = parseInt(aRec.cr.split('-')[0]) || 0;
+const hConfPct = hConfWins / ((parseInt(hRec.cr.split('-')[0]) + parseInt(hRec.cr.split('-')[1])) || 1);
+const aConfPct = aConfWins / ((parseInt(aRec.cr.split('-')[0]) + parseInt(aRec.cr.split('-')[1])) || 1);
+const hPostseason = (hRec.w >= 18 || hRec.r <= 4) ? 1.5 : 0;
+const aPostseason = (aRec.w >= 18 || aRec.r <= 4) ? 1.5 : 0;
+const hScore = (hwPwr * 0.5) + (hWinPct * 20 * 0.2) + (hConfPct * 20 * 0.2) + (hPostseason * 0.1 * 10) + 3.5;
+const aScore = (awPwr * 0.5) + (aWinPct * 20 * 0.2) + (aConfPct * 20 * 0.2) + (aPostseason * 0.1 * 10);
+const roadFavFade = favTeam === g.away && absSpread >= 14;
+const takedog = favTeam && ((hScore > aScore + 3 && favTeam === g.away) || (aScore > hScore + 3 && favTeam === g.home) || roadFavFade);
+const pickTeam = takedog ? dogTeam : favTeam;
+const pickSign = takedog ? '+' : '-';
+const spreadStr = pickTeam ? (pickTeam + ' ' + pickSign + absSpread) : 'PICK EM';
   const pwrDiff   = pwr(g.home) - pwr(g.away);
   const pwrFav    = pwrDiff >= 0 ? g.home : g.away;
   const absPwr    = Math.abs(pwrDiff);
@@ -1066,7 +1084,7 @@ async function runAI(g, hS, aS, sp, c) {
     + '3-4 sentences per section. No bullet points.\n\n'
     + 'FORMAT — use these exact section headers:\n\n'
     + '§OVERVIEW\n'
-    + '[Lead with the stat that most supports the pick. Contrast ' + (favTeam||g.home) + "'s key offensive/defensive numbers vs opponent. Reference their PPG differential, DefRtg, and conference standing to frame why this team wins big.]\n\n"
+    + '[Lead with the stat that most supports the pick. Contrast ' + (pickTeam||g.home) + "'s key offensive/defensive numbers vs opponent. Reference their PPG differential, DefRtg, and conference standing to frame why this team wins big.]\n\n"
     + '§SPREAD & BETTING ANGLE\n'
     + '[Use OffRtg vs DefRtg matchup numbers to justify the ' + absSpread + '-pt spread. ' + spreadJustify + ' Compare FG% and TS% of both teams to explain efficiency edge.]\n\n'
     + '§KEY FACTORS\n'
