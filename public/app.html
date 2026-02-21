@@ -884,8 +884,9 @@ function renderFinalCard(g) {
   let res = 'pushed';
   if(actual > coverLine+0.4) res='covered';
   else if(actual < coverLine-0.4) res='missed';
-  const displayVal = pick.pickTeam ? (pick.pickSign + pick.displaySpread) : '0';
-  const teamLabel  = pick.pickTeam ? (pick.pickTeam + (pick.isDog ? ' DOG' : ' FAV')) : '—';
+  const displayVal = sp > 0 ? '+' + sp : '' + sp;
+const pickTeamDisplay = sp < 0 ? g.home : g.away;
+const teamLabel = pickTeamDisplay + ' ' + displayVal;
   const t = toCST(g.start_time);
   return `<div class="gc ${cc} fade-in" id="${g.id}" data-id="${g.id}" onclick="selectGame('${g.id}')">
     <div class="gc-time"><strong>${t}</strong>CT</div>
