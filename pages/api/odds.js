@@ -34,13 +34,34 @@ export default async function handler(req, res) {
     'Oklahoma Sooners':'OKLA','Texas A&M Aggies':'TXAM','BYU Cougars':'BYU',
     'Michigan State Spartans':'MSU','Ohio State Buckeyes':'OSU','Wisconsin Badgers':'WIS',
     'Iowa Hawkeyes':'IOWA','Purdue Boilermakers':'PUR','Indiana Hoosiers':'IND',
-    'Pacific Tigers':'PAC','Portland Pilots':'PORT','Northwestern Wildcats':'NW',
-    'Akron Zips':'AKR','Ball State Cardinals':'BALL',
+    'Northwestern Wildcats':'NW','Akron Zips':'AKR','Ball State Cardinals':'BALL',
+    'Providence Friars':'PROV','Marquette Golden Eagles':'MARQ','DePaul Blue Demons':'DEP',
+    'Stanford Cardinal':'STAN','California Golden Bears':'CAL','Pittsburgh Panthers':'PITT',
+    'Boston College Eagles':'BC','NC State Wolfpack':'NCST','SMU Mustangs':'SMU',
+    'Utah State Aggies':'USU','New Mexico Lobos':'UNM','San Diego State Aztecs':'SDSU',
+    'Colorado State Rams':'CSU','Boise State Broncos':'BSU','Nevada Wolf Pack':'NEV',
+    'Wyoming Cowboys':'WYO','UNLV Rebels':'UNLV','Fresno State Bulldogs':'FRES',
+    'Saint Mary\'s Gaels':'SMC','Santa Clara Broncos':'SCU','Grand Canyon Antelopes':'GC',
+    'Tulsa Golden Hurricane':'TLSA','South Florida Bulls':'USF','Wichita State Shockers':'WICH',
+    'Tulane Green Wave':'TULN','North Texas Mean Green':'UNT','South Alabama Jaguars':'USA',
+    'Troy Trojans':'TROY','Marshall Thundering Herd':'MRSH','Belmont Bruins':'BEL',
+    'Murray State Racers':'MURR','Bradley Braves':'BRAD','Georgia Southern Eagles':'GASO',
+    'Georgia State Panthers':'GAST','Yale Bulldogs':'YALE','Kent State Golden Flashes':'KENT',
+    'Buffalo Bulls':'BUFF','UCF Knights':'UCF','Utah Utes':'UTAH'
   };
 
   try {
+    // Get current date and next 7 days
+    const today = new Date();
+    const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+    
+    // Format dates for API
+    const dateFrom = today.toISOString().split('T')[0];
+    const dateTo = nextWeek.toISOString().split('T')[0];
+
+    // Fetch odds data with date range
     const response = await fetch(
-      `https://api.the-odds-api.com/v4/sports/basketball_ncaab/odds/?apiKey=${apiKey}&regions=us&markets=spreads&bookmakers=fanduel&oddsFormat=american`
+      `https://api.the-odds-api.com/v4/sports/basketball_ncaab/odds/?apiKey=${apiKey}&regions=us&markets=spreads,totals,h2h&bookmakers=fanduel&oddsFormat=american&dateFormat=iso&commenceTimeFrom=${dateFrom}T00:00:00Z&commenceTimeTo=${dateTo}T23:59:59Z`
     );
 
     if (!response.ok) {
@@ -49,28 +70,108 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+    
+    // Process games by date
+    const gamesByDate = {
+      today: [],
+      week: [],
+      final: []
+    };
+
     const lines = {};
 
     for (const game of data) {
       const homeAbbr = TEAM_MAP[game.home_team];
       const awayAbbr = TEAM_MAP[game.away_team];
+      
       if (!homeAbbr || !awayAbbr) continue;
 
-      const fanduel = game.bookmakers?.[0];
+      const gameDate = new Date(game.commence_time);
+      const isToday = gameDate.toDateString() === today.toDateString();
+      const isPastGame = gameDate < today;
+
+      const fanduel = game.bookmakers?.find(b => b.key === 'fanduel');
       if (!fanduel) continue;
 
+      // Extract all markets
       const spreadMarket = fanduel.markets?.find(m => m.key === 'spreads');
-      if (!spreadMarket) continue;
+      const totalsMarket = fanduel.markets?.find(m => m.key === 'totals');
+      const h2hMarket = fanduel.markets?.find(m => m.key === 'h2h');
 
-      const awayOutcome = spreadMarket.outcomes.find(o => o.name === game.away_team);
-if (!awayOutcome) continue;
+      let gameData = {
+        id: `${awayAbbr}_${homeAbbr}_${gameDate.getTime()}`,
+        commence_time: game.commence_time,
+        home_team: game.home_team,
+        away_team: game.away_team,
+        home_abbr: homeAbbr,
+        away_abbr: awayAbbr,
+        status: isPastGame ? 'final' : 'upcoming'
+      };
 
-lines[homeAbbr + '|' + awayAbbr] = awayOutcome.point;
+      // Process spread
+      if (spreadMarket) {
+        const awayOutcome = spreadMarket.outcomes.find(o => o.name === game.away_team);
+        const homeOutcome = spreadMarket.outcomes.find(o => o.name === game.home_team);
+        
+        if (awayOutcome && homeOutcome) {
+          lines[homeAbbr + '|' + awayAbbr] = awayOutcome.point;
+          gameData.spread = {
+            away: { point: awayOutcome.point, price: awayOutcome.price },
+            home: { point: homeOutcome.point, price: homeOutcome.price }
+          };
+        }
+      }
+
+      // Process totals
+      if (totalsMarket) {
+        const overOutcome = totalsMarket.outcomes.find(o => o.name === 'Over');
+        const underOutcome = totalsMarket.outcomes.find(o => o.name === 'Under');
+        
+        if (overOutcome && underOutcome) {
+          gameData.total = {
+            over: { point: overOutcome.point, price: overOutcome.price },
+            under: { point: underOutcome.point, price: underOutcome.price }
+          };
+        }
+      }
+
+      // Process moneyline
+      if (h2hMarket) {
+        const awayML = h2hMarket.outcomes.find(o => o.name === game.away_team);
+        const homeML = h2hMarket.outcomes.find(o => o.name === game.home_team);
+        
+        if (awayML && homeML) {
+          gameData.moneyline = {
+            away: awayML.price,
+            home: homeML.price
+          };
+        }
+      }
+
+      // Categorize by date
+      if (isPastGame) {
+        gamesByDate.final.push(gameData);
+      } else if (isToday) {
+        gamesByDate.today.push(gameData);
+      } else {
+        gamesByDate.week.push(gameData);
+      }
     }
 
-    return res.status(200).json({ lines });
+    // Sort games by time
+    Object.keys(gamesByDate).forEach(category => {
+      gamesByDate[category].sort((a, b) => new Date(a.commence_time) - new Date(b.commence_time));
+    });
+
+    return res.status(200).json({ 
+      lines,
+      games: gamesByDate,
+      lastUpdated: new Date().toISOString(),
+      totalGames: data.length
+    });
+
   } catch (err) {
     console.error('Odds API error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', detail: err.message });
   }
 }
